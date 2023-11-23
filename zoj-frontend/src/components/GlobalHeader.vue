@@ -12,8 +12,8 @@
           disabled
         >
           <div class="titie-bar">
-            <img class="logo" src="../assets/ojlogo.jpg" />
-            <div class="title">z oj</div>
+            <img class="logo" src="../assets/ojlogo.png" />
+            <!--            <div class="title">z oj</div>-->
           </div>
         </a-menu-item>
         <a-menu-item v-for="item in visibleRoutes" :key="item.path">
@@ -66,7 +66,7 @@ rounter.afterEach((to, from, failure) => {
 setTimeout(() => {
   store.dispatch("user/getLoginUser", {
     userName: "周俊玮",
-    role: ACCESS_ENUM.ADMIN,
+    userRole: ACCESS_ENUM.ADMIN,
   });
 }, 3000);
 
@@ -83,7 +83,8 @@ const doMenuClick = (key: string) => {
 }
 
 .logo {
-  height: 48px;
+  height: 60px;
+  width: 90px;
 }
 
 .title {
