@@ -27,6 +27,9 @@ export default {
   mutations: {
     updateUser(state, payload) {
       state.loginUser = payload;
+      if (state.loginUser.userName === null) {
+        state.loginUser.userName = "未命名";
+      }
     },
   },
 } as StoreOptions<any>;

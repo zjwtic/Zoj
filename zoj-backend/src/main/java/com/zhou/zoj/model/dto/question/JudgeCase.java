@@ -11,5 +11,5 @@ public class JudgeCase {
     /**
      * 输出用例
      */
-    private String ouput;
+    private String output;
 }

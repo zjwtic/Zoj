@@ -1,28 +1,36 @@
 <template>
   <div id="userLayout">
-    <a-layout style="min-height: 100vh">
-      <a-layout-header class="header">
-        <a-space
-          ><img src="../assets/ojlogo.png" class="logo" />
-          <!--          <div>z o</div>-->
-        </a-space>
-      </a-layout-header>
+    <div id="adminbox">
       <a-layout-content class="content">
         <router-view />
       </a-layout-content>
-      <a-layout-footer class="footer">Zoj by 周俊玮</a-layout-footer>
-    </a-layout>
+    </div>
   </div>
 </template>
 <style scoped>
 #userLayout {
+  padding-top: 30vh;
+  height: 100vh;
   text-align: center;
-  background: url("../assets/loginbackground.jpg");
+  background-image: url("../assets/login.jpg");
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: cover;
 }
 
 #userLayout .logo {
   width: 64px;
   height: 64px;
+}
+
+#userLayout #adminbox {
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 13px;
+  text-align: center;
+  margin: 0px auto;
+  margin-top: 80px;
+  width: 450px;
+  height: 430px;
 }
 
 #userLayout .header {
@@ -31,7 +39,10 @@
 
 #userLayout .content {
   margin-bottom: 16px;
-  padding: 20px;
+  padding-top: 40px;
+  padding-bottom: 70px;
+  padding-left: 40px;
+  padding-right: 40px;
 }
 
 #userLayout .footer {
