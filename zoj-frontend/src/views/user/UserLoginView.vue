@@ -61,7 +61,7 @@ const handleSubmit = async () => {
     await store.dispatch("user/getLoginUser");
     message.success("登录成功");
     router.push({
-      path: "/",
+      path: "/home",
       replace: true,
     });
   } else {
@@ -71,7 +71,6 @@ const handleSubmit = async () => {
 const handleRegister = async () => {
   router.push({
     path: "/user/register",
-    replace: true,
   });
 };
 </script>

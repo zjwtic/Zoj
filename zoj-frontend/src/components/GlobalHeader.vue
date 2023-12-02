@@ -21,8 +21,8 @@
         </a-menu-item>
       </a-menu>
     </a-col>
-    <a-col flex="100px">
-      <div>{{ store.state.user?.loginUser?.userName ?? "未登录" }}</div>
+    <a-col flex="140px">
+      <UserAvatarView />
     </a-col>
   </a-row>
 </template>
@@ -33,6 +33,10 @@ import { computed, ref } from "vue";
 import { useStore } from "vuex";
 import checkAccess from "@/access/checkAccess";
 import ACCESS_ENUM from "@/access/accessEnum";
+import { UserControllerService } from "../../generated";
+import message from "@arco-design/web-vue/es/message";
+import router from "@/router";
+import UserAvatarView from "@/views/usermessage/UserAvatarView.vue";
 
 const store = useStore();
 const rounter = useRouter(); //数据
@@ -63,12 +67,12 @@ rounter.afterEach((to, from, failure) => {
 
 //3秒后得到username值
 
-setTimeout(() => {
-  store.dispatch("user/getLoginUser", {
-    userName: "周俊玮",
-    userRole: ACCESS_ENUM.ADMIN,
-  });
-}, 3000);
+// setTimeout(() => {
+//   store.dispatch("user/getLoginUser", {
+//     userName: "周俊玮",
+//     userRole: ACCESS_ENUM.DMIN,
+//   });A
+// }, 3000);
 
 const doMenuClick = (key: string) => {
   rounter.push({

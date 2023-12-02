@@ -20,6 +20,8 @@ export default {
         commit("updateUser", {
           ...state.loginUser,
           userRole: ACCESS_ENUM.NOT_LOGIN,
+          userAvatar:
+            "https://assets.leetcode.cn/aliyun-lc-upload/default_avatar.png?x-oss-process=image%2Fformat%2Cwebp",
         });
       }
     },
@@ -28,7 +30,7 @@ export default {
     updateUser(state, payload) {
       state.loginUser = payload;
       if (state.loginUser.userName === null) {
-        state.loginUser.userName = "未命名";
+        state.loginUser.userName = "Zoj用户";
       }
     },
   },

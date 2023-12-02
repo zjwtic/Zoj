@@ -11,6 +11,7 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
   # session 配置
   session:
     # todo 取消注释开启分布式 session（须先配置 Redis）
@@ -26,18 +27,18 @@ spring:
     password: 1234
   # Redis 配置
   # todo 需替换配置，然后取消注释
-#  redis:
-#    database: 1
-#    host: localhost
-#    port: 6379
-#    timeout: 5000
-#    password: 123456
+  #  redis:
+  #    database: 1
+  #    host: localhost
+  #    port: 6379
+  #    timeout: 5000
+  #    password: 123456
   # Elasticsearch 配置
   # todo 需替换配置，然后取消注释
-#  elasticsearch:
-#    uris: http://localhost:9200
-#    username: root
-#    password: 123456
+  #  elasticsearch:
+  #    uris: http://localhost:9200
+  #    username: root
+  #    password: 123456
   # 文件上传
   servlet:
     multipart:
@@ -86,7 +87,7 @@ wx:
 # todo 需替换配置
 cos:
   client:
-    accessKey: xxx
-    secretKey: xxx
-    region: xxx
-    bucket: xxx
+    accessKey: AKIDWwHTXdbLr8CuNabQzQhqnaApofIl5Ghy
+    secretKey: DCwTns9FrGar4DIUaZP6aqrhPvDI7Tim
+    region: ap-nanjing
+    bucket: zoj-1322845231

@@ -12,7 +12,7 @@
   padding-top: 30vh;
   height: 100vh;
   text-align: center;
-  background-image: url("../assets/login.jpg");
+  background-image: url("../assets/logobackground.jpg");
   background-repeat: no-repeat;
   background-position: center top;
   background-size: cover;
