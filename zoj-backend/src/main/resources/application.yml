@@ -87,7 +87,10 @@ wx:
 # todo 需替换配置
 cos:
   client:
-    accessKey: xx
-    secretKey: xx
-    region: xx
-    bucket: xx
+    accessKey: AKIDhFgAVdWEpEUbbet22qU4X2UoloiT5aHt
+    secretKey: 43342tkVFHApWIyobZTH7nOybH1soeKw
+    region: ap-nanjing
+    bucket: zoj-1322845231
+# 代码沙箱配置
+codesandbox:
+  type: example
