@@ -87,8 +87,8 @@ wx:
 # todo 需替换配置
 cos:
   client:
-    accessKey: AKIDhFgAVdWEpEUbbet22qU4X2UoloiT5aHt
-    secretKey: 43342tkVFHApWIyobZTH7nOybH1soeKw
+    accessKey:
+    secretKey:
     region: ap-nanjing
     bucket: zoj-1322845231
 # 代码沙箱配置
