@@ -10,7 +10,7 @@ import com.zhou.zoj.judge.codesandbox.model.ExecuteCodeRequest;
 import com.zhou.zoj.judge.codesandbox.model.ExecuteCodeResponse;
 import com.zhou.zoj.judge.strategy.JudgeContext;
 import com.zhou.zoj.model.dto.question.JudgeCase;
-import com.zhou.zoj.model.dto.questionsubmit.JudgeInfo;
+import com.zhou.zoj.judge.codesandbox.model.JudgeInfo;
 import com.zhou.zoj.model.entity.Question;
 import com.zhou.zoj.model.entity.QuestionSubmit;
 import com.zhou.zoj.model.enums.QuestionSubmitStatusEnum;

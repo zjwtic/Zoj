@@ -1,4 +1,4 @@
-package com.zhou.zoj.judge.codesandbox.model;
+package com.example.zojcodesandbox.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
