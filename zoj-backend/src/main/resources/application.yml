@@ -93,4 +93,4 @@ cos:
     bucket: zoj-1322845231
 # 代码沙箱配置
 codesandbox:
-  type: example
+  type: remote
