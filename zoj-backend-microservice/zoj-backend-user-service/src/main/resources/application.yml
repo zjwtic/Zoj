@@ -1,0 +1,73 @@
+spring:
+  application:
+    name: zoj-backend-user-service
+  # ?? dev ??
+  profiles:
+    active: dev
+  # ?? swagger3
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+#  devtools:
+#    livereload:
+#      port: 35732
+
+  # session ??
+  session:
+    store-type: redis
+    # 30 ???
+    timeout: 2592000
+  # ?????
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/zoj
+    username: root
+    password: 1234
+    # Redis ??
+    redis:
+      database: 0
+      host: localhost
+      port: 6379
+      timeout: 5000
+      password:
+  # ????
+  servlet:
+    multipart:
+      # ????
+      max-file-size: 10MB
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+server:
+  address: 0.0.0.0
+  port: 8102
+  servlet:
+    context-path: /api/user
+    # cookie 30 ???
+    session:
+      cookie:
+        max-age: 2592000
+        path: /api
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDelete # ????????????
+      logic-delete-value: 1 # ?????????? 1?
+      logic-not-delete-value: 0 # ?????????? 0?
+
+#cos:
+#  client:
+#    accessKey:
+#    secretKey:
+#    region: ap-nanjing
+#    bucket: zoj-1322845231
+## ??????
+codesandbox:
+  type: remote
+knife4j:
+  enable: true
