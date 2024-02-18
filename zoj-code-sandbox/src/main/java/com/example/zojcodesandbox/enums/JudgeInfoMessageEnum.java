@@ -1,4 +1,4 @@
-package com.zhou.zoj.model.enums;
+package com.example.zojcodesandbox.enums;
 
 import org.apache.commons.lang3.ObjectUtils;
 
@@ -8,20 +8,28 @@ import java.util.stream.Collectors;
 
 /**
  * 题目提交编程语言枚举
- *
  */
-public enum QuestionSubmitLanguageEnum {
+public enum JudgeInfoMessageEnum {
 
-    JAVA("java", "java"),
-    CPLUSPLUS("cpp", "cpp"),
-//    GOLANG("go", "go"), //todo 扩展支持go语言
-    PYTHON("python", "python");
+    ACCEPTED("Accepted", "成功"),
+    WRONG_ANSWER("Wrong Answer", "答案错误"),
+    COMPILE_ERROR("Compile Error", "编译错误"),
+    MEMORY_LIMIT_EXCEEDED("", "内存溢出"),
+    TIME_LIMIT_EXCEEDED("Time Limit Exceeded", "超时"),
+    PRESENTATION_ERROR("Presentation Error", "展示错误"),
+    WAITING("Waiting", "等待中"),
+    OUTPUT_LIMIT_EXCEEDED("Output Limit Exceeded", "输出溢出"),
+    DANGEROUS_OPERATION("Dangerous Operation", "危险操作"),
+    RUNTIME_ERROR("Runtime Error", "运行错误"),
+    SYSTEM_ERROR("System Error", "系统错误");
+
+
 
     private final String text;
 
     private final String value;
 
-    QuestionSubmitLanguageEnum(String text, String value) {
+    JudgeInfoMessageEnum(String text, String value) {
         this.text = text;
         this.value = value;
     }
@@ -41,11 +49,11 @@ public enum QuestionSubmitLanguageEnum {
      * @param value
      * @return
      */
-    public static QuestionSubmitLanguageEnum getEnumByValue(String value) {
+    public static JudgeInfoMessageEnum getEnumByValue(String value) {
         if (ObjectUtils.isEmpty(value)) {
             return null;
         }
-        for (QuestionSubmitLanguageEnum anEnum : QuestionSubmitLanguageEnum.values()) {
+        for (JudgeInfoMessageEnum anEnum : JudgeInfoMessageEnum.values()) {
             if (anEnum.value.equals(value)) {
                 return anEnum;
             }

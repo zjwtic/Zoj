@@ -57,16 +57,19 @@ import {
   Question,
   QuestionControllerService,
   QuestionSubmitQueryRequest,
+  UserControllerService,
 } from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
 import { useRouter } from "vue-router";
 import moment from "moment";
+import { useStore } from "vuex";
 
 const tableRef = ref();
-
+const store = useStore();
 const dataList = ref([]);
 const total = ref(0);
 const searchParams = ref<QuestionSubmitQueryRequest>({
+  userId: store.state.user?.loginUser?.id,
   questionId: undefined,
   language: undefined,
   pageSize: 10,
@@ -131,10 +134,6 @@ const columns = [
   {
     title: "题目 id",
     dataIndex: "questionId",
-  },
-  {
-    title: "提交者 id",
-    dataIndex: "userId",
   },
   {
     title: "创建时间",

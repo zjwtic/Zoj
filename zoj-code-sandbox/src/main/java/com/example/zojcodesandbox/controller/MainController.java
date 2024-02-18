@@ -1,12 +1,14 @@
 package com.example.zojcodesandbox.controller;
 
-import com.example.zojcodesandbox.JavaNativeCodeSandbox;
+import com.example.zojcodesandbox.cpp.CppNativeCodeSandbox;
+import com.example.zojcodesandbox.java.JavaNativeCodeSandbox;
 import com.example.zojcodesandbox.model.ExecuteCodeRequest;
 import com.example.zojcodesandbox.model.ExecuteCodeResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.zojcodesandbox.python.PythonNativeCodeSandbox;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +24,11 @@ public class MainController {
     @Resource
     private JavaNativeCodeSandbox javaNativeCodeSandbox;
 
+    @Resource
+    private PythonNativeCodeSandbox pythonNativeCodeSandbox;
+
+    @Resource
+    private CppNativeCodeSandbox cppNativeCodeSandbox;
 
     @GetMapping("/health")
     public String healthcheck(){
@@ -46,6 +53,14 @@ public class MainController {
         if (executeCodeRequest == null) {
             throw new RuntimeException("请求参数为空");
         }
+        String language = executeCodeRequest.getLanguage();
+        if ("cpp".equals(language)){
+            return cppNativeCodeSandbox.executeCode(executeCodeRequest);
+        }
+        if ("python".equals(language)){
+            return pythonNativeCodeSandbox.executeCode(executeCodeRequest);
+        }
+        //默认都是java
         return javaNativeCodeSandbox.executeCode(executeCodeRequest);
     }
 

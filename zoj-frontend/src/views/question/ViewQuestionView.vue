@@ -50,8 +50,10 @@
             >
               <a-option>java</a-option>
               <a-option>cpp</a-option>
-              <a-option>go</a-option>
-              <a-option>html</a-option>
+              <!--              <a-option>go</a-option>-->
+              <!--              待扩展语言-->
+              <!--              <a-option>html</a-option>-->
+              <a-option>python</a-option>
             </a-select>
           </a-form-item>
         </a-form>

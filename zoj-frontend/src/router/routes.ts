@@ -13,6 +13,7 @@ import QuestionListView from "@/views/question/QuestionListView.vue";
 import QuestionTopicView from "@/views/question/QuestionTopicView.vue";
 import QuestionsView from "@/views/question/QuestionsView.vue";
 import QuestionSubmitView from "@/views/question/QuestionSubmitView.vue";
+import QuestionSubmitByOwnView from "@/views/questionSubmit/QuestionSubmitByOwnView.vue";
 import ManageQuestionView from "@/views/question/ManageQuestionView.vue";
 import ViewQuestionView from "@/views/question/ViewQuestionView.vue";
 import MatchShowView from "@/views/match/MatchShowView.vue";
@@ -161,6 +162,11 @@ export const routes: Array<RouteRecordRaw> = [
     path: "/question_submit",
     name: "浏览题目提交",
     component: QuestionSubmitView,
+  },
+  {
+    path: "/question_submit_by_own",
+    name: "浏览自己的题目提交",
+    component: QuestionSubmitByOwnView,
   },
   {
     path: "/usermessage/avatar",

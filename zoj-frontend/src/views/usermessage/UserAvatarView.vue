@@ -22,6 +22,7 @@
           <a-doption @click="usershow">个人设置</a-doption>
           <a-doption>我的题单</a-doption>
           <a-doption>参加的比赛</a-doption>
+          <a-doption>我的讨论</a-doption>
         </template>
       </a-dropdown>
     </div>

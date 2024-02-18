@@ -18,6 +18,7 @@ import com.zhou.zoj.service.QuestionService;
 import com.zhou.zoj.service.QuestionSubmitService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,21 +67,21 @@ public class JudgeServiceImpl implements JudgeService {
         }
 
         //4）调用沙箱,获取到执行结果
-            CodeSandbox codeSandbox = CodeSandboxFactory.newInstance(type);
-            codeSandbox = new CodeSandboxProxy(codeSandbox);
-            String code = questionSubmit.getCode();
-            String language = questionSubmit.getLanguage();
-            //获取输入用例
-            String judgeCaseStr = question.getJudgeCase();
-            List<JudgeCase> judgeCaseList = JSONUtil.toList(judgeCaseStr, JudgeCase.class);
-            List<String> inputList = judgeCaseList.stream().map(JudgeCase::getInput).collect(Collectors.toList());
-            ExecuteCodeRequest executeCodeRequest = ExecuteCodeRequest.builder()
-                    .code(code)
-                    .language(language)
-                    .inputList(inputList)
-                    .build();
-            ExecuteCodeResponse executeCodeResponse = codeSandbox.executeCode(executeCodeRequest);
-            List<String> outputList = executeCodeResponse.getOutputList();
+        CodeSandbox codeSandbox = CodeSandboxFactory.newInstance(type);
+        codeSandbox = new CodeSandboxProxy(codeSandbox);
+        String code = questionSubmit.getCode();
+        String language = questionSubmit.getLanguage();
+        //获取输入用例
+        String judgeCaseStr = question.getJudgeCase();
+        List<JudgeCase> judgeCaseList = JSONUtil.toList(judgeCaseStr, JudgeCase.class);
+        List<String> inputList = judgeCaseList.stream().map(JudgeCase::getInput).collect(Collectors.toList());
+        ExecuteCodeRequest executeCodeRequest = ExecuteCodeRequest.builder()
+                .code(code)
+                .language(language)
+                .inputList(inputList)
+                .build();
+        ExecuteCodeResponse executeCodeResponse = codeSandbox.executeCode(executeCodeRequest);
+        List<String> outputList = executeCodeResponse.getOutputList();
         // 5）根据沙箱的执行结果，设置题目的判题状态和信息
         JudgeContext judgeContext = new JudgeContext();
         judgeContext.setJudgeInfo(executeCodeResponse.getJudgeInfo());
@@ -93,7 +94,11 @@ public class JudgeServiceImpl implements JudgeService {
         // 6）修改数据库中的判题结果
         questionSubmitUpdate = new QuestionSubmit();
         questionSubmitUpdate.setId(questionSubmitId);
-        questionSubmitUpdate.setStatus(QuestionSubmitStatusEnum.SUCCEED.getValue());
+        if (executeCodeResponse.getStatus().equals(2)) {
+            questionSubmitUpdate.setStatus(QuestionSubmitStatusEnum.SUCCEED.getValue());
+        } else if (executeCodeResponse.getStatus().equals(3)) {
+            questionSubmitUpdate.setStatus(QuestionSubmitStatusEnum.FAILED.getValue());
+        }
         questionSubmitUpdate.setJudgeInfo(JSONUtil.toJsonStr(judgeInfo));
         update = questionSubmitService.updateById(questionSubmitUpdate);
         if (!update) {

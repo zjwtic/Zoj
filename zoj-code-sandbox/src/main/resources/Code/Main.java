@@ -5,5 +5,5 @@ public class Main{
            for(int i=0;i<args.length;i++){
                result+=Integer.parseInt(args[i]);
            }
-            System.out.println("结果是:"+result);
+            System.out.println(result);
         }}

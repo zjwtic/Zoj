@@ -1,5 +1,6 @@
 package com.zhou.zoj.judge.strategy;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.zhou.zoj.model.dto.question.JudgeCase;
 import com.zhou.zoj.model.dto.question.JudgeConfig;
@@ -33,6 +34,14 @@ public class JavaLanguageJudgeStrategy implements JudgeStrategy {
         JudgeInfo judgeInfoResponse = new JudgeInfo();
         judgeInfoResponse.setMemory(memory);
         judgeInfoResponse.setTime(time);
+
+        // 判断是不是 有代码沙箱有编译异常或者运行异常
+        if(StrUtil.isNotBlank(judgeInfo.getMessage())){
+            judgeInfoResponse.setMessage(judgeInfo.getMessage());
+            return judgeInfoResponse;
+        }
+
+
         // 先判断沙箱执行的结果输出数量是否和预期输出数量相等
         if (outputList.size() != inputList.size()) {
             judgeInfoMessageEnum = JudgeInfoMessageEnum.WRONG_ANSWER;

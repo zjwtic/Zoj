@@ -12,7 +12,12 @@
           disabled
         >
           <div class="titie-bar">
-            <img class="logo" src="../assets/ojlogo.png" />
+            <img
+              @click="gohome"
+              class="logo"
+              src="../assets/ojlogo.png"
+              style="cursor: pointer"
+            />
             <!--            <div class="title">z oj</div>-->
           </div>
         </a-menu-item>
@@ -73,6 +78,13 @@ rounter.afterEach((to, from, failure) => {
 //     userRole: ACCESS_ENUM.DMIN,
 //   });A
 // }, 3000);
+
+const gohome = async () => {
+  router.push({
+    path: "/home",
+    replace: true,
+  });
+};
 
 const doMenuClick = (key: string) => {
   rounter.push({

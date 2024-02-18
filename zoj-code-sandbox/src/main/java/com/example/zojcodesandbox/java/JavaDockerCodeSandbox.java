@@ -1,4 +1,4 @@
-package com.example.zojcodesandbox;
+package com.example.zojcodesandbox.java;
 
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.ArrayUtil;

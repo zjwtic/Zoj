@@ -1,4 +1,4 @@
-package com.example.zojcodesandbox;
+package com.example.zojcodesandbox.java;
 
 import com.example.zojcodesandbox.model.ExecuteCodeRequest;
 import com.example.zojcodesandbox.model.ExecuteCodeResponse;
