@@ -21,6 +21,7 @@
     "vuex": "^4.0.0"
   },
   "devDependencies": {
+    "@arco-design/web-react": "^2.59.1",
     "@arco-design/web-vue": "^2.53.2",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",

@@ -17,6 +17,9 @@
           <a-button status="danger" @click="doUpdate(record)">修改</a-button>
         </a-space>
       </template>
+      <template #createTime="{ record }">
+        {{ moment(record.createTime).format("YYYY-MM-DD HH:mm:ss") }}
+      </template>
     </a-table>
   </div>
 </template>
@@ -26,6 +29,7 @@ import { onMounted, ref, watchEffect } from "vue";
 import message from "@arco-design/web-vue/es/message";
 import { Question, QuestionControllerService } from "../../../generated";
 import { useRouter } from "vue-router";
+import moment from "moment";
 
 const show = ref(true);
 
@@ -129,7 +133,11 @@ const columns = [
   },
   {
     title: "创建时间",
-    dataIndex: "createTime",
+    slotName: "createTime",
+    align: "center",
+    sortable: {
+      sortDirections: ["ascend"],
+    },
   },
   {
     title: "操作",

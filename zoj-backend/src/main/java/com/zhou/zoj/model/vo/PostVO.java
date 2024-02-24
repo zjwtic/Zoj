@@ -38,9 +38,16 @@ public class PostVO implements Serializable {
     private Integer thumbNum;
 
     /**
+     * 点踩数
+     */
+    private Integer dislikeNum;
+
+    /**
      * 收藏数
      */
     private Integer favourNum;
+
+
 
     /**
      * 创建用户 id
@@ -71,6 +78,11 @@ public class PostVO implements Serializable {
      * 是否已点赞
      */
     private Boolean hasThumb;
+
+    /**
+     * 是否已点踩
+     */
+    private Boolean hasDislike;
 
     /**
      * 是否已收藏

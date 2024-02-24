@@ -10,18 +10,19 @@ import com.zhou.zoj.common.ResultUtils;
 import com.zhou.zoj.constant.UserConstant;
 import com.zhou.zoj.exception.BusinessException;
 import com.zhou.zoj.exception.ThrowUtils;
-import com.zhou.zoj.model.dto.post.PostAddRequest;
-import com.zhou.zoj.model.dto.post.PostEditRequest;
-import com.zhou.zoj.model.dto.post.PostQueryRequest;
-import com.zhou.zoj.model.dto.post.PostUpdateRequest;
+import com.zhou.zoj.model.dto.post.*;
+import com.zhou.zoj.model.dto.postthumb.PostThumbAddRequest;
 import com.zhou.zoj.model.entity.Post;
+import com.zhou.zoj.model.entity.Question;
 import com.zhou.zoj.model.entity.User;
 import com.zhou.zoj.model.vo.PostVO;
 import com.zhou.zoj.service.PostService;
 import com.zhou.zoj.service.UserService;
+
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -136,6 +137,30 @@ public class PostController {
      * @param id
      * @return
      */
+    @GetMapping("/get")
+    public BaseResponse<Post> getPostById(long id, HttpServletRequest request) {
+        if (id <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Post post = postService.getById(id);
+        if (post == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        // 仅本人或管理员可查看自己
+        User loginUser = userService.getLoginUser(request);
+        if (!post.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
+        return ResultUtils.success(post);
+    }
+
+
+    /**
+     * 根据 id 获取
+     *
+     * @param id
+     * @return
+     */
     @GetMapping("/get/vo")
     public BaseResponse<PostVO> getPostVOById(long id, HttpServletRequest request) {
         if (id <= 0) {
@@ -157,7 +182,7 @@ public class PostController {
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<PostVO>> listPostVOByPage(@RequestBody PostQueryRequest postQueryRequest,
-            HttpServletRequest request) {
+                                                       HttpServletRequest request) {
         long current = postQueryRequest.getCurrent();
         long size = postQueryRequest.getPageSize();
         // 限制爬虫
@@ -176,7 +201,7 @@ public class PostController {
      */
     @PostMapping("/my/list/page/vo")
     public BaseResponse<Page<PostVO>> listMyPostVOByPage(@RequestBody PostQueryRequest postQueryRequest,
-            HttpServletRequest request) {
+                                                         HttpServletRequest request) {
         if (postQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -202,7 +227,7 @@ public class PostController {
      */
     @PostMapping("/search/page/vo")
     public BaseResponse<Page<PostVO>> searchPostVOByPage(@RequestBody PostQueryRequest postQueryRequest,
-            HttpServletRequest request) {
+                                                         HttpServletRequest request) {
         long size = postQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);

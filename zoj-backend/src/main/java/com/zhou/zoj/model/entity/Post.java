@@ -43,6 +43,11 @@ public class Post implements Serializable {
     private Integer thumbNum;
 
     /**
+     * 点踩数
+     */
+    private Integer dislikeNum;
+
+    /**
      * 收藏数
      */
     private Integer favourNum;

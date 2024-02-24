@@ -32,8 +32,10 @@
               </template>
             </a-card>
           </a-tab-pane>
-          <a-tab-pane key="comment" title="评论">评论区</a-tab-pane>
-          <a-tab-pane key="answer" title="答案">想看答案？不给~~</a-tab-pane>
+          <a-tab-pane key="comment" title="题解">暂无题解</a-tab-pane>
+          <a-tab-pane key="answer" title="提交记录"
+            >提交记录模块开发中。。
+          </a-tab-pane>
         </a-tabs>
       </a-col>
       <a-col :md="12" xs="24">

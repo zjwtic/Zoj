@@ -8,20 +8,20 @@ import com.zhou.zoj.common.ErrorCode;
 import com.zhou.zoj.constant.CommonConstant;
 import com.zhou.zoj.exception.BusinessException;
 import com.zhou.zoj.exception.ThrowUtils;
+import com.zhou.zoj.mapper.PostDislikeMapper;
 import com.zhou.zoj.mapper.PostFavourMapper;
 import com.zhou.zoj.mapper.PostMapper;
 import com.zhou.zoj.mapper.PostThumbMapper;
 import com.zhou.zoj.model.dto.post.PostEsDTO;
 import com.zhou.zoj.model.dto.post.PostQueryRequest;
-import com.zhou.zoj.model.entity.Post;
-import com.zhou.zoj.model.entity.PostFavour;
-import com.zhou.zoj.model.entity.PostThumb;
-import com.zhou.zoj.model.entity.User;
+import com.zhou.zoj.model.entity.*;
 import com.zhou.zoj.model.vo.PostVO;
 import com.zhou.zoj.model.vo.UserVO;
 import com.zhou.zoj.service.PostService;
+import com.zhou.zoj.service.PostThumbService;
 import com.zhou.zoj.service.UserService;
 import com.zhou.zoj.utils.SqlUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -39,6 +40,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -64,6 +66,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
 
     @Resource
     private PostFavourMapper postFavourMapper;
+
+    @Resource
+    private PostDislikeMapper postDislikeMapper;
 
     @Resource
     private ElasticsearchRestTemplate elasticsearchRestTemplate;
@@ -242,18 +247,25 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         // 2. 已登录，获取用户点赞、收藏状态
         User loginUser = userService.getLoginUserPermitNull(request);
         if (loginUser != null) {
-            // 获取点赞
+//         获取已经点赞
             QueryWrapper<PostThumb> postThumbQueryWrapper = new QueryWrapper<>();
             postThumbQueryWrapper.in("postId", postId);
             postThumbQueryWrapper.eq("userId", loginUser.getId());
             PostThumb postThumb = postThumbMapper.selectOne(postThumbQueryWrapper);
             postVO.setHasThumb(postThumb != null);
-            // 获取收藏
+//         获取已经收藏
             QueryWrapper<PostFavour> postFavourQueryWrapper = new QueryWrapper<>();
             postFavourQueryWrapper.in("postId", postId);
             postFavourQueryWrapper.eq("userId", loginUser.getId());
             PostFavour postFavour = postFavourMapper.selectOne(postFavourQueryWrapper);
             postVO.setHasFavour(postFavour != null);
+
+//         获取已经点踩
+            QueryWrapper<PostDislike> postDislikeQueryWrapper = new QueryWrapper<>();
+            postDislikeQueryWrapper.in("postId", postId);
+            postDislikeQueryWrapper.eq("userId", loginUser.getId());
+            PostDislike postDislike = postDislikeMapper.selectOne(postDislikeQueryWrapper);
+            postVO.setHasDislike(postDislike != null);
         }
         return postVO;
     }
@@ -272,6 +284,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         // 2. 已登录，获取用户点赞、收藏状态
         Map<Long, Boolean> postIdHasThumbMap = new HashMap<>();
         Map<Long, Boolean> postIdHasFavourMap = new HashMap<>();
+        Map<Long, Boolean> postIdHasDislikeMap = new HashMap<>();
         User loginUser = userService.getLoginUserPermitNull(request);
         if (loginUser != null) {
             Set<Long> postIdSet = postList.stream().map(Post::getId).collect(Collectors.toSet());
@@ -288,6 +301,12 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
             postFavourQueryWrapper.eq("userId", loginUser.getId());
             List<PostFavour> postFavourList = postFavourMapper.selectList(postFavourQueryWrapper);
             postFavourList.forEach(postFavour -> postIdHasFavourMap.put(postFavour.getPostId(), true));
+            // 获取点踩
+            QueryWrapper<PostDislike> postDislikeQueryWrapper = new QueryWrapper<>();
+            postDislikeQueryWrapper.in("postId", postIdSet);
+            postDislikeQueryWrapper.eq("userId", loginUser.getId());
+            List<PostDislike> postDislikeList = postDislikeMapper.selectList(postDislikeQueryWrapper);
+            postDislikeList.forEach(postPostDislike -> postIdHasDislikeMap.put(postPostDislike.getPostId(), true));
         }
         // 填充信息
         List<PostVO> postVOList = postList.stream().map(post -> {
@@ -300,11 +319,13 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
             postVO.setUser(userService.getUserVO(user));
             postVO.setHasThumb(postIdHasThumbMap.getOrDefault(post.getId(), false));
             postVO.setHasFavour(postIdHasFavourMap.getOrDefault(post.getId(), false));
+            postVO.setHasDislike(postIdHasDislikeMap.getOrDefault(post.getId(), false));
             return postVO;
         }).collect(Collectors.toList());
         postVOPage.setRecords(postVOList);
         return postVOPage;
     }
+
 
 }
 

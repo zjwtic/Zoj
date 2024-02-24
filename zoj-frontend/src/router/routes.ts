@@ -19,7 +19,10 @@ import ViewQuestionView from "@/views/question/ViewQuestionView.vue";
 import MatchShowView from "@/views/match/MatchShowView.vue";
 import ExaminationShowView from "@/views/examination/ExaminationShowView.vue";
 import QuestionSubmitShowView from "@/views/questionSubmit/QuestionSubmitShowView.vue";
-import DiscussShowView from "@/views/discuss/DiscussShowView.vue";
+import DiscussionShowView from "@/views/discuss/DiscussionShowView.vue";
+import DiscussionContentView from "@/views/discuss/DiscussionContentView.vue";
+import AddDiscussionView from "@/views/discuss/AddDiscussionView.vue";
+import ManageDiscussionView from "@/views/discuss/ManageDiscussionView.vue";
 
 import ACCESS_ENUM from "@/access/accessEnum";
 
@@ -91,9 +94,52 @@ export const routes: Array<RouteRecordRaw> = [
   //   },
   // },
   {
-    path: "/discussshow",
+    path: "/discussions",
     name: "讨论",
-    component: DiscussShowView,
+    component: DiscussionShowView,
+  },
+  {
+    path: "/view/discussion/:id",
+    name: "讨论内容",
+    props: true,
+    component: DiscussionContentView,
+    meta: {
+      hideInMenu: true,
+    },
+  },
+  {
+    path: "/add/discussion",
+    name: "添加讨论",
+    component: AddDiscussionView,
+    // meta: {
+    //   access: ACCESS_ENUM.ADMIN,
+    // },
+  },
+  {
+    path: "/update/discussion",
+    name: "更新讨论",
+    component: AddDiscussionView,
+    meta: {
+      access: ACCESS_ENUM.USER,
+      hideInMenu: true,
+    },
+  },
+  {
+    path: "/manage/discussion",
+    name: "管理讨论",
+    component: ManageDiscussionView,
+    // meta: {
+    //   access: ACCESS_ENUM.ADMIN,
+    // },
+  },
+  {
+    path: "/manage/own/discussion",
+    name: "管理个人的讨论",
+    component: ManageDiscussionView,
+    meta: {
+      access: ACCESS_ENUM.USER,
+      hideInMenu: true,
+    },
   },
 
   // {

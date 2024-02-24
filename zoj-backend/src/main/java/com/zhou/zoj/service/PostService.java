@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhou.zoj.model.dto.post.PostQueryRequest;
 import com.zhou.zoj.model.entity.Post;
+import com.zhou.zoj.model.entity.User;
 import com.zhou.zoj.model.vo.PostVO;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -54,4 +56,6 @@ public interface PostService extends IService<Post> {
      * @return
      */
     Page<PostVO> getPostVOPage(Page<Post> postPage, HttpServletRequest request);
+
+
 }

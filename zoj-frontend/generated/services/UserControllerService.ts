@@ -197,29 +197,6 @@ userLoginRequest: UserLoginRequest,
     }
 
     /**
-     * userLoginByWxOpen
-     * @param code code
-     * @returns BaseResponse_LoginUserVO_ OK
-     * @throws ApiError
-     */
-    public static userLoginByWxOpenUsingGet(
-code: string,
-): CancelablePromise<BaseResponse_LoginUserVO_> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/user/login/wx_open',
-            query: {
-                'code': code,
-            },
-            errors: {
-                401: `Unauthorized`,
-                403: `Forbidden`,
-                404: `Not Found`,
-            },
-        });
-    }
-
-    /**
      * userLogout
      * @returns BaseResponse_boolean_ OK
      * @returns any Created

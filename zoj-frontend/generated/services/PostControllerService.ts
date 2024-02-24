@@ -5,6 +5,7 @@
 import type { BaseResponse_boolean_ } from '../models/BaseResponse_boolean_';
 import type { BaseResponse_long_ } from '../models/BaseResponse_long_';
 import type { BaseResponse_Page_PostVO_ } from '../models/BaseResponse_Page_PostVO_';
+import type { BaseResponse_Post_ } from '../models/BaseResponse_Post_';
 import type { BaseResponse_PostVO_ } from '../models/BaseResponse_PostVO_';
 import type { DeleteRequest } from '../models/DeleteRequest';
 import type { PostAddRequest } from '../models/PostAddRequest';
@@ -76,6 +77,29 @@ postEditRequest: PostEditRequest,
             method: 'POST',
             url: '/api/post/edit',
             body: postEditRequest,
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+
+    /**
+     * getPostById
+     * @param id id
+     * @returns BaseResponse_Post_ OK
+     * @throws ApiError
+     */
+    public static getPostByIdUsingGet(
+id?: number,
+): CancelablePromise<BaseResponse_Post_> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/post/get',
+            query: {
+                'id': id,
+            },
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,

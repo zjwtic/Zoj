@@ -2,10 +2,10 @@
   <div id="addQuestionView">
     <h2>创建题目</h2>
     <a-form :model="form" label-align="left">
-      <a-form-item field="title" label="标题">
+      <a-form-item field="title" label="标题" style="width: 1000px">
         <a-input v-model="form.title" placeholder="请输入标题" />
       </a-form-item>
-      <a-form-item field="tags" label="标签">
+      <a-form-item field="tags" label="标签" style="width: 1000px">
         <a-input-tag v-model="form.tags" placeholder="请选择标签" allow-clear />
       </a-form-item>
       <a-form-item field="content" label="题目内容">

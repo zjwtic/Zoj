@@ -10,6 +10,7 @@
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="tags" column="tags" jdbcType="VARCHAR"/>
         <result property="thumbNum" column="thumbNum" jdbcType="BIGINT"/>
+        <result property="dislikeNum" column="dislikeNum" jdbcType="BIGINT"/>
         <result property="favourNum" column="favourNum" jdbcType="BIGINT"/>
         <result property="userId" column="userId" jdbcType="BIGINT"/>
         <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
@@ -19,7 +20,7 @@
 
     <sql id="Base_Column_List">
         id,title,content,tags,
-        thumbNum,favourNum,userId,
+        thumbNum,dislikeNum,favourNum,userId,
         createTime,updateTime,isDelete
     </sql>
 
