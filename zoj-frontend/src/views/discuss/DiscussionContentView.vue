@@ -53,7 +53,9 @@
             {{ post?.dislikeNum }}
           </a-space>
         </a-space>
-        <!--        <DiscussionCommentView :id="props.id" />-->
+        <div style="padding-top: 15px">
+          <DiscussionCommentView :id="props.id" />
+        </div>
       </a-layout-content>
     </a-layout>
   </div>
