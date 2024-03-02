@@ -4,18 +4,20 @@
 <!--    <div class="tmsg-respond" ref="respondBox">-->
 <!--      <h3>-->
 <!--        发表评论-->
-<!--        <small v-show="isRespond" class="tcolorm" @click="removeRespond"-->
+<!--        <small v-show="isRespond" style="color: #64609e" @click="removeRespond"-->
 <!--          >取消回复</small-->
 <!--        >-->
 <!--      </h3>-->
-<!--      <form class="">-->
-<!--        <el-input-->
-<!--          type="textarea"-->
-<!--          :rows="2"-->
-<!--          placeholder="说点什么呢``"-->
-<!--          v-model="textarea"-->
-<!--        >-->
-<!--        </el-input>-->
+<!--      <form>-->
+<!--        <a-space direction="vertical" size="large" fill>-->
+<!--          <a-textarea-->
+<!--            v-model="textarea"-->
+<!--            placeholder="说点什么呢``"-->
+<!--            :max-length="{ length: 1000, errorOnly: true }"-->
+<!--            allow-clear-->
+<!--            show-word-limit-->
+<!--          />-->
+<!--        </a-space>-->
 <!--        <div :class="pBody ? 'OwO' : 'OwO OwO-open'">-->
 <!--          <div class="OwO-logo" @click="pBody = !pBody">-->
 <!--            <span>OwO表情</span>-->
@@ -28,7 +30,7 @@
 <!--                :key="'oitem' + index"-->
 <!--                @click="choseEmoji(oitem.title)"-->
 <!--              >-->
-<!--                <img :src="'static/img/emot/image/' + oitem.url" alt="" />-->
+<!--                <img :src="require(`../../static/emot/${oitem.url}`)" alt="" />-->
 <!--              </li>-->
 <!--            </ul>-->
 <!--            <div class="OwO-bar">-->
@@ -38,94 +40,74 @@
 <!--            </div>-->
 <!--          </div>-->
 <!--        </div>-->
-<!--        <el-row class="tmsg-r-info">-->
-<!--          <el-col :span="24" class="info-submit">-->
-<!--            <p class="tcolors-bg" @click="sendMsg">{{ sendTip }}</p>-->
-<!--          </el-col>-->
-<!--        </el-row>-->
+<!--        <a-space direction="vertical" fill>-->
+<!--          <a-button type="primary" long @click="sendMsg">-->
+<!--            {{ sendTip }}-->
+<!--          </a-button>-->
+<!--        </a-space>-->
 <!--      </form>-->
 <!--    </div>-->
+
 <!--    <div class="tmsg-comments" ref="listDom">-->
-<!--      <a href="#" class="tmsg-comments-tip"-->
+<!--      <a class="tmsg-comments-tip"-->
 <!--        >活捉 {{ commentList ? commentList.length : 0 }} 条</a-->
 <!--      >-->
 <!--      <div class="tmsg-commentshow">-->
-<!--        <ul class="tmsg-commentlist">-->
-<!--          <li-->
-<!--            class="tmsg-c-item"-->
-<!--            v-for="(item, index) in commentList"-->
-<!--            :key="'common' + index"-->
+<!--        <div v-for="(item, index) in commentList" :key="'common' + index">-->
+<!--          <a-comment-->
+<!--            style="font-size: 17px"-->
+<!--            :author="item.username"-->
+<!--            :avatar="item.userAvatar"-->
+<!--            :datetime="moment(item.createTime).format('YYYY-MM-DD HH:mm:ss')"-->
 <!--          >-->
-<!--            <article class="">-->
-<!--              <header>-->
-<!--                <img-->
-<!--                  :src="$store.state.errorImg"-->
-<!--                  :onerror="$store.state.errorImg"-->
-<!--                />-->
-<!--                <div class="i-name">-->
-<!--                  {{ item.username }}-->
-<!--                </div>-->
-<!--                &lt;!&ndash; <div class="i-class">-->
-<!--                    {{item.label}}-->
-<!--                </div> &ndash;&gt;-->
-<!--                <div class="i-time">-->
-<!--                  <time>{{ item.createTime }}</time>-->
-<!--                </div>-->
-<!--              </header>-->
-<!--              <section>-->
-<!--                <p v-html="analyzeEmoji(item.content)">-->
-<!--                  {{ analyzeEmoji(item.content) }}-->
-<!--                </p>-->
-<!--                <div-->
-<!--                  v-if="haslogin"-->
-<!--                  class="tmsg-replay"-->
-<!--                  @click="respondMsg(item.id, item.id, item.createBy)"-->
-<!--                >-->
-<!--                  回复-->
-<!--                </div>-->
-<!--              </section>-->
-<!--            </article>-->
-<!--            <ul-->
-<!--              v-show="item.children"-->
-<!--              class="tmsg-commentlist"-->
-<!--              style="padding-left: 60px"-->
-<!--            >-->
-<!--              <li-->
-<!--                class="tmsg-c-item"-->
-<!--                v-for="(citem, cindex) in item.children"-->
-<!--                :key="'citem' + cindex"-->
+<!--            <template #content>-->
+<!--              <p v-html="analyzeEmoji(item.content)"></p>-->
+<!--            </template>-->
+<!--            <template #actions>-->
+<!--              <span-->
+<!--                v-if="hasLogin"-->
+<!--                class="action"-->
+<!--                @click="respondMsg(item.id, item.id, item.createBy, $event)"-->
 <!--              >-->
-<!--                <article class="">-->
-<!--                  <header>-->
-<!--                    <img-->
-<!--                      :src="$store.state.errorImg"-->
-<!--                      :onerror="$store.state.errorImg"-->
-<!--                    />-->
-<!--                    <div class="i-name">-->
-<!--                      {{ citem.username }} <span>回复</span>-->
-<!--                      {{ citem.toCommentUserName }}-->
-<!--                    </div>-->
-<!--                    <div class="i-time">-->
-<!--                      <time>{{ citem.createTime }}</time>-->
-<!--                    </div>-->
-<!--                  </header>-->
-<!--                  <section>-->
-<!--                    <p v-html="analyzeEmoji(citem.content)">-->
-<!--                      {{ citem.content }}-->
-<!--                    </p>-->
-<!--                    <div-->
-<!--                      v-show="haslogin"-->
-<!--                      class="tmsg-replay"-->
-<!--                      @click="respondMsg(item.id, citem.id, citem.createBy)"-->
-<!--                    >-->
-<!--                      回复-->
-<!--                    </div>-->
-<!--                  </section>-->
-<!--                </article>-->
-<!--              </li>-->
-<!--            </ul>-->
-<!--          </li>-->
-<!--        </ul>-->
+<!--                <IconMessage /> Reply-->
+<!--              </span>-->
+<!--            </template>-->
+<!--            <div-->
+<!--              v-show="item.children"-->
+<!--              v-for="(citem, cindex) in item.children"-->
+<!--              :key="'citem' + cindex"-->
+<!--            >-->
+<!--              <a-comment-->
+<!--                style="font-size: 17px"-->
+<!--                :avatar="citem.userAvatar"-->
+<!--                :datetime="-->
+<!--                  moment(citem.createTime).format('YYYY-MM-DD HH:mm:ss')-->
+<!--                "-->
+<!--              >-->
+<!--                <template #author>-->
+<!--                  {{ citem.username }} <span>回复 </span>-->
+<!--                  <span style="color: #00bfff">{{-->
+<!--                    citem.toCommentUserName-->
+<!--                  }}</span>-->
+<!--                </template>-->
+<!--                <template #content>-->
+<!--                  <p v-html="analyzeEmoji(citem.content)"></p>-->
+<!--                </template>-->
+<!--                <template #actions>-->
+<!--                  <span-->
+<!--                    v-show="hasLogin"-->
+<!--                    class="action"-->
+<!--                    @click="-->
+<!--                      respondMsg(item.id, citem.id, citem.createBy, $event)-->
+<!--                    "-->
+<!--                  >-->
+<!--                    <IconMessage /> Reply-->
+<!--                  </span>-->
+<!--                </template>-->
+<!--              </a-comment>-->
+<!--            </div>-->
+<!--          </a-comment>-->
+<!--        </div>-->
 <!--        <h1 v-show="hasMore" class="tcolors-bg" @click="addMoreFun">-->
 <!--          查看更多-->
 <!--        </h1>-->
@@ -134,301 +116,305 @@
 <!--    </div>-->
 <!--  </div>-->
 <!--</template>-->
-
-<!--<script>-->
+<!--<script setup lang="ts">-->
+<!--import DiscussionCommentView from "@/views/discuss/DiscussionCommentView.vue";-->
+<!--import { IconHeart, IconMessage, IconStar } from "@arco-design/web-vue/es/icon";-->
+<!--import moment from "moment";-->
+<!--import { useRouter } from "vue-router";-->
+<!--import { onMounted, ref, watchEffect, defineProps, withDefaults } from "vue";-->
 <!--import {-->
-<!--  sendComment,-->
-<!--  getArticleComment,-->
-<!--  getLinkComment,-->
-<!--} from "../api/comment.js";-->
-<!--import { getToken } from "../utils/auth.js";-->
+<!--  CommentAddRequest,-->
+<!--  CommentControllerService,-->
+<!--  CommentQueryRequest,-->
+<!--} from "../../../generated";-->
+<!--import message from "@arco-design/web-vue/es/message";-->
+<!--import { defineExpose } from "vue";-->
+<!--import { useStore } from "vuex";-->
 
-<!--export default {-->
-<!--  data() {-->
-<!--    //选项 / 数据-->
-<!--    return {-->
-<!--      respondBox: "", //评论表单-->
-<!--      listDom: "", //评论列表-->
-<!--      tmsgBox: "", //总评论盒子-->
-<!--      // 查询参数-->
-<!--      queryParams: {-->
-<!--        pageNum: 1,-->
-<!--        pageSize: 10,-->
-<!--        articleId: 0,-->
-<!--      },-->
-<!--      isRespond: false,-->
-<!--      textarea: "", //文本框输入内容-->
-<!--      pBody: true, //表情打开控制-->
-<!--      commentList: [], //评论列表数据-->
-<!--      aid: 0, //文章id-->
-<!--      hasMore: false,-->
-<!--      haslogin: false,-->
-<!--      userId: "", //用户id-->
-<!--      type: 0, //回复评论的当前的commentId-->
-<!--      leavePid: "", //赞赏等其他模块的分类id-->
-<!--      pid: "", //回复评论的一级commentId-->
-<!--      rootId: -1, //根评论id，如果是针对文字评论直接用-1表示-->
-<!--      toCommentId: -1, //所回复评论的id-->
-<!--      toCommentUserId: -1, //所评论的用户id-->
-<!--      sendTip: "发送~",-->
-<!--      OwOlist: [-->
-<!--        //表情包和表情路径-->
-<!--        { title: "微笑", url: "weixiao.gif" },-->
-<!--        { title: "嘻嘻", url: "xixi.gif" },-->
-<!--        { title: "哈哈", url: "haha.gif" },-->
-<!--        { title: "可爱", url: "keai.gif" },-->
-<!--        { title: "可怜", url: "kelian.gif" },-->
-<!--        { title: "挖鼻", url: "wabi.gif" },-->
-<!--        { title: "吃惊", url: "chijing.gif" },-->
-<!--        { title: "害羞", url: "haixiu.gif" },-->
-<!--        { title: "挤眼", url: "jiyan.gif" },-->
-<!--        { title: "闭嘴", url: "bizui.gif" },-->
-<!--        { title: "鄙视", url: "bishi.gif" },-->
-<!--        { title: "爱你", url: "aini.gif" },-->
-<!--        { title: "泪", url: "lei.gif" },-->
-<!--        { title: "偷笑", url: "touxiao.gif" },-->
-<!--        { title: "亲亲", url: "qinqin.gif" },-->
-<!--        { title: "生病", url: "shengbing.gif" },-->
-<!--        { title: "太开心", url: "taikaixin.gif" },-->
-<!--        { title: "白眼", url: "baiyan.gif" },-->
-<!--        { title: "右哼哼", url: "youhengheng.gif" },-->
-<!--        { title: "左哼哼", url: "zuohengheng.gif" },-->
-<!--        { title: "嘘", url: "xu.gif" },-->
-<!--        { title: "衰", url: "shuai.gif" },-->
-<!--        { title: "吐", url: "tu.gif" },-->
-<!--        { title: "哈欠", url: "haqian.gif" },-->
-<!--        { title: "抱抱", url: "baobao.gif" },-->
-<!--        { title: "怒", url: "nu.gif" },-->
-<!--        { title: "疑问", url: "yiwen.gif" },-->
-<!--        { title: "馋嘴", url: "chanzui.gif" },-->
-<!--        { title: "拜拜", url: "baibai.gif" },-->
-<!--        { title: "思考", url: "sikao.gif" },-->
-<!--        { title: "汗", url: "han.gif" },-->
-<!--        { title: "困", url: "kun.gif" },-->
-<!--        { title: "睡", url: "shui.gif" },-->
-<!--        { title: "钱", url: "qian.gif" },-->
-<!--        { title: "失望", url: "shiwang.gif" },-->
-<!--        { title: "酷", url: "ku.gif" },-->
-<!--        { title: "色", url: "se.gif" },-->
-<!--        { title: "哼", url: "heng.gif" },-->
-<!--        { title: "鼓掌", url: "guzhang.gif" },-->
-<!--        { title: "晕", url: "yun.gif" },-->
-<!--        { title: "悲伤", url: "beishang.gif" },-->
-<!--        { title: "抓狂", url: "zhuakuang.gif" },-->
-<!--        { title: "黑线", url: "heixian.gif" },-->
-<!--        { title: "阴险", url: "yinxian.gif" },-->
-<!--        { title: "怒骂", url: "numa.gif" },-->
-<!--        { title: "互粉", url: "hufen.gif" },-->
-<!--        { title: "书呆子", url: "shudaizi.gif" },-->
-<!--        { title: "愤怒", url: "fennu.gif" },-->
-<!--        { title: "感冒", url: "ganmao.gif" },-->
-<!--        { title: "心", url: "xin.gif" },-->
-<!--        { title: "伤心", url: "shangxin.gif" },-->
-<!--        { title: "猪", url: "zhu.gif" },-->
-<!--        { title: "熊猫", url: "xiongmao.gif" },-->
-<!--        { title: "兔子", url: "tuzi.gif" },-->
-<!--        { title: "喔克", url: "ok.gif" },-->
-<!--        { title: "耶", url: "ye.gif" },-->
-<!--        { title: "棒棒", url: "good.gif" },-->
-<!--        { title: "不", url: "no.gif" },-->
-<!--        { title: "赞", url: "zan.gif" },-->
-<!--        { title: "来", url: "lai.gif" },-->
-<!--        { title: "弱", url: "ruo.gif" },-->
-<!--        { title: "草泥马", url: "caonima.gif" },-->
-<!--        { title: "神马", url: "shenma.gif" },-->
-<!--        { title: "囧", url: "jiong.gif" },-->
-<!--        { title: "浮云", url: "fuyun.gif" },-->
-<!--        { title: "给力", url: "geili.gif" },-->
-<!--        { title: "围观", url: "weiguan.gif" },-->
-<!--        { title: "威武", url: "weiwu.gif" },-->
-<!--        { title: "话筒", url: "huatong.gif" },-->
-<!--        { title: "蜡烛", url: "lazhu.gif" },-->
-<!--        { title: "蛋糕", url: "dangao.gif" },-->
-<!--        { title: "发红包", url: "fahongbao.gif" },-->
-<!--      ],-->
-<!--    };-->
-<!--  },-->
-<!--  methods: {-->
-<!--    //事件处理器-->
-<!--    setData(initData, result) {-->
-<!--      var msg = result.rows;-->
-<!--      if (initData) {-->
-<!--        //刷新列表-->
-<!--        this.commentList = msg;-->
-<!--      } else {-->
-<!--        //加载更多-->
-<!--        this.commentList = this.commentList.concat(msg);-->
-<!--      }-->
+<!--interface Props {-->
+<!--  id: string;-->
+<!--}-->
 
-<!--      this.hasMore = result.total > this.commentList.length;-->
-<!--    },-->
-<!--    //选择表情包-->
-<!--    choseEmoji: function (inner) {-->
-<!--      this.textarea += "[" + inner + "]";-->
-<!--    },-->
-<!--    analyzeEmoji: function (cont) {-->
-<!--      //编译表情替换成图片展示出来-->
-<!--      var pattern1 = /\[[\u4e00-\u9fa5]+\]/g;-->
-<!--      var pattern2 = /\[[\u4e00-\u9fa5]+\]/;-->
-<!--      var content = cont.match(pattern1);-->
-<!--      var str = cont;-->
-<!--      if (content) {-->
-<!--        for (var i = 0; i < content.length; i++) {-->
-<!--          for (var j = 0; j < this.OwOlist.length; j++) {-->
-<!--            if ("[" + this.OwOlist[j].title + "]" == content[i]) {-->
-<!--              var src = this.OwOlist[j].url;-->
-<!--              break;-->
-<!--            }-->
-<!--          }-->
-<!--          str = str.replace(-->
-<!--            pattern2,-->
-<!--            '<img src="static/img/emot/image/' + src + '"/>'-->
-<!--          );-->
-<!--        }-->
-<!--        // console.log(str);-->
-<!--      }-->
-<!--      return str;-->
-<!--    },-->
-<!--    //发送留言-->
-<!--    sendMsg: function () {-->
-<!--      //留言-->
-<!--      var that = this;-->
-<!--      if (that.textarea) {-->
-<!--        that.sendTip = "咻~~";-->
-<!--        sendComment(-->
-<!--          that.type,-->
-<!--          that.aid,-->
-<!--          that.rootId,-->
-<!--          that.toCommentId,-->
-<!--          that.toCommentUserId,-->
-<!--          that.textarea-->
-<!--        ).then((response) => {-->
-<!--          that.textarea = "";-->
-<!--          that.rootId = -1;-->
-<!--          that.toCommentId = -1;-->
-<!--          that.toCommentUserId = -1;-->
+<!--const props = withDefaults(defineProps<Props>(), {-->
+<!--  id: () => "",-->
+<!--});-->
 
-<!--          that.routeChange();-->
-<!--          that.removeRespond();-->
-<!--          var timer02 = setTimeout(function () {-->
-<!--            that.sendTip = "发送~";-->
-<!--            clearTimeout(timer02);-->
-<!--          }, 1000);-->
-<!--        });-->
-<!--      } else {-->
-<!--        that.sendTip = "内容不能为空~";-->
-<!--        var timer = setTimeout(function () {-->
-<!--          that.sendTip = "发送~";-->
-<!--          clearTimeout(timer);-->
-<!--        }, 3000);-->
-<!--      }-->
-<!--    },-->
-<!--    respondMsg: function (rootId, toCommentId, toCommentUserId) {-->
-<!--      //回复留言-->
-<!--      // console.log(leavePid,pid);-->
-<!--      var that = this;-->
-<!--      if (localStorage.getItem("userInfo")) {-->
-<!--        var dom = event.currentTarget;-->
-<!--        dom = dom.parentNode;-->
-<!--        this.isRespond = true;-->
-<!--        //   this.leavePid = leavePid;-->
-<!--        this.rootId = rootId;-->
-<!--        this.toCommentId = toCommentId;-->
-<!--        this.toCommentUserId = toCommentUserId;-->
-<!--        dom.appendChild(this.$refs.respondBox);-->
-<!--      } else {-->
-<!--        that-->
-<!--          .$confirm("登录后即可点赞和收藏，是否前往登录页面?", "提示", {-->
-<!--            confirmButtonText: "确定",-->
-<!--            cancelButtonText: "取消",-->
-<!--            type: "warning",-->
-<!--          })-->
-<!--          .then(() => {-->
-<!--            //确定，跳转至登录页面-->
-<!--            //储存当前页面路径，登录成功后跳回来-->
-<!--            localStorage.setItem("logUrl", that.$route.fullPath);-->
-<!--            that.$router.push({ path: "/Login?login=1" });-->
-<!--          })-->
-<!--          .catch(() => {});-->
-<!--      }-->
-<!--    },-->
-<!--    removeRespond: function () {-->
-<!--      //取消回复留言-->
-<!--      this.isRespond = false;-->
-<!--      this.rootId = -1;-->
-<!--      this.toCommentId = -1;-->
-<!--      this.toCommentUserId = -1;-->
-<!--      this.$refs.tmsgBox.insertBefore(-->
-<!--        this.$refs.respondBox,-->
-<!--        this.$refs.listDom-->
-<!--      );-->
-<!--    },-->
-<!--    showCommentList: function (initData) {-->
-<!--      //评论列表-->
-<!--      var that = this;-->
-<!--      that.aid =-->
-<!--        that.$route.query.aid == undefined-->
-<!--          ? 1-->
-<!--          : parseInt(that.$route.query.aid); //获取传参的aid-->
-<!--      that.queryParams.articleId = that.aid;-->
-<!--      //判断当前用户是否登录-->
-<!--      var token = getToken();-->
-<!--      if (token) {-->
-<!--        that.haslogin = true;-->
-<!--      } else {-->
-<!--        that.haslogin = false;-->
-<!--      }-->
+<!--const hasMore = ref(false); // 是否有更多-->
 
-<!--      //公用设置数据方法-->
+<!--const sendTip = ref("发送");-->
+<!--// const mdid = BigInt(1759947916743127042);-->
+<!--const textarea = ref("212");-->
 
-<!--      if (that.$route.name == "DetailArticle") {-->
-<!--        //文章列表的评论-->
-<!--        that.type = 0;-->
-<!--        getArticleComment(that.queryParams).then((response) => {-->
-<!--          that.setData(initData, response);-->
-<!--        });-->
-<!--      } else {-->
-<!--        //其他评论-->
-<!--        if (that.$route.name == "FriendsLink") {-->
-<!--          that.type = 1;-->
-<!--          getLinkComment(that.queryParams).then((response) => {-->
-<!--            that.setData(initData, response);-->
-<!--          });-->
-<!--        }-->
-<!--      }-->
-<!--    },-->
-<!--    addMoreFun: function () {-->
-<!--      //查看更多-->
-<!--      this.queryParams.pageNum++;-->
-<!--      this.showCommentList(false);-->
-<!--    },-->
-<!--    routeChange: function () {-->
-<!--      //重新加载-->
-<!--      var that = this;-->
-<!--      this.queryParams.pageNum = 1;-->
-<!--      this.showCommentList(true);-->
-<!--    },-->
-<!--  },-->
-<!--  components: {-->
-<!--    //定义组件-->
-<!--  },-->
-<!--  watch: {-->
-<!--    // 如果路由有变化，会再次执行该方法-->
-<!--    // '$route':'routeChange'-->
-<!--  },-->
-<!--  created() {-->
-<!--    //生命周期函数-->
-<!--    // console.log(this.$route);-->
-<!--    var that = this;-->
-<!--    that.routeChange();-->
-<!--  },-->
-<!--  mounted() {-->
-<!--    //页面加载完成后-->
-<!--  },-->
+<!--const commentList = ref([]); //-->
+
+<!--const hasLogin = ref(false);-->
+
+<!--const store = useStore();-->
+<!--// 使用 ref 创建响应式数据-->
+
+<!--const router = useRouter();-->
+
+<!--const isRespond = ref(false);-->
+<!--const respondBox = ref<HTMLElement | null>(null); // 假设 respondBox 是一个元素引用-->
+<!--const tmsgBox = ref<HTMLElement | null>(null); // 假设 respondBox 是一个元素引用-->
+<!--const listDom = ref<HTMLElement | null>(null); // 假设 respondBox 是一个元素引用-->
+
+<!--const queryParams = ref({-->
+<!--  current: 1,-->
+<!--  pageSize: 10,-->
+<!--  postId: props.id,-->
+<!--}) as any;-->
+
+<!--const addParams = ref({-->
+<!--  postId: props.id,-->
+<!--  rootId: -1,-->
+<!--  toCommentId: -1,-->
+<!--  toCommentUserId: -1,-->
+<!--}) as any;-->
+
+<!--const pBody = ref(true);-->
+
+<!--const OwOlist = ref([-->
+<!--  { title: "微笑", url: "weixiao.gif" },-->
+<!--  { title: "嘻嘻", url: "xixi.gif" },-->
+<!--  { title: "哈哈", url: "haha.gif" },-->
+<!--  { title: "可爱", url: "keai.gif" },-->
+<!--  { title: "可怜", url: "kelian.gif" },-->
+<!--  { title: "挖鼻", url: "wabi.gif" },-->
+<!--  { title: "吃惊", url: "chijing.gif" },-->
+<!--  { title: "害羞", url: "haixiu.gif" },-->
+<!--  { title: "挤眼", url: "jiyan.gif" },-->
+<!--  { title: "闭嘴", url: "bizui.gif" },-->
+<!--  { title: "鄙视", url: "bishi.gif" },-->
+<!--  { title: "爱你", url: "aini.gif" },-->
+<!--  { title: "泪", url: "lei.gif" },-->
+<!--  { title: "偷笑", url: "touxiao.gif" },-->
+<!--  { title: "亲亲", url: "qinqin.gif" },-->
+<!--  { title: "生病", url: "shengbing.gif" },-->
+<!--  { title: "太开心", url: "taikaixin.gif" },-->
+<!--  { title: "白眼", url: "baiyan.gif" },-->
+<!--  { title: "右哼哼", url: "youhengheng.gif" },-->
+<!--  { title: "左哼哼", url: "zuohengheng.gif" },-->
+<!--  { title: "嘘", url: "xu.gif" },-->
+<!--  { title: "衰", url: "shuai.gif" },-->
+<!--  { title: "吐", url: "tu.gif" },-->
+<!--  { title: "哈欠", url: "haqian.gif" },-->
+<!--  { title: "抱抱", url: "baobao.gif" },-->
+<!--  { title: "怒", url: "nu.gif" },-->
+<!--  { title: "疑问", url: "yiwen.gif" },-->
+<!--  { title: "馋嘴", url: "chanzui.gif" },-->
+<!--  { title: "拜拜", url: "baibai.gif" },-->
+<!--  { title: "思考", url: "sikao.gif" },-->
+<!--  { title: "汗", url: "han.gif" },-->
+<!--  { title: "困", url: "kun.gif" },-->
+<!--  { title: "睡", url: "shui.gif" },-->
+<!--  { title: "钱", url: "qian.gif" },-->
+<!--  { title: "失望", url: "shiwang.gif" },-->
+<!--  { title: "酷", url: "ku.gif" },-->
+<!--  { title: "色", url: "se.gif" },-->
+<!--  { title: "哼", url: "heng.gif" },-->
+<!--  { title: "鼓掌", url: "guzhang.gif" },-->
+<!--  { title: "晕", url: "yun.gif" },-->
+<!--  { title: "悲伤", url: "beishang.gif" },-->
+<!--  { title: "抓狂", url: "zhuakuang.gif" },-->
+<!--  { title: "黑线", url: "heixian.gif" },-->
+<!--  { title: "阴险", url: "yinxian.gif" },-->
+<!--  { title: "怒骂", url: "numa.gif" },-->
+<!--  { title: "互粉", url: "hufen.gif" },-->
+<!--  { title: "书呆子", url: "shudaizi.gif" },-->
+<!--  { title: "愤怒", url: "fennu.gif" },-->
+<!--  { title: "感冒", url: "ganmao.gif" },-->
+<!--  { title: "心", url: "xin.gif" },-->
+<!--  { title: "伤心", url: "shangxin.gif" },-->
+<!--  { title: "猪", url: "zhu.gif" },-->
+<!--  { title: "熊猫", url: "xiongmao.gif" },-->
+<!--  { title: "兔子", url: "tuzi.gif" },-->
+<!--  { title: "喔克", url: "ok.gif" },-->
+<!--  { title: "耶", url: "ye.gif" },-->
+<!--  { title: "棒棒", url: "good.gif" },-->
+<!--  { title: "不", url: "no.gif" },-->
+<!--  { title: "赞", url: "zan.gif" },-->
+<!--  { title: "来", url: "lai.gif" },-->
+<!--  { title: "弱", url: "ruo.gif" },-->
+<!--  { title: "草泥马", url: "caonima.gif" },-->
+<!--  { title: "神马", url: "shenma.gif" },-->
+<!--  { title: "囧", url: "jiong.gif" },-->
+<!--  { title: "浮云", url: "fuyun.gif" },-->
+<!--  { title: "给力", url: "geili.gif" },-->
+<!--  { title: "围观", url: "weiguan.gif" },-->
+<!--  { title: "威武", url: "weiwu.gif" },-->
+<!--  { title: "话筒", url: "huatong.gif" },-->
+<!--  { title: "蜡烛", url: "lazhu.gif" },-->
+<!--  { title: "蛋糕", url: "dangao.gif" },-->
+<!--  { title: "发红包", url: "fahongbao.gif" },-->
+<!--]);-->
+<!--/**-->
+<!-- * 页面加载时，请求数据-->
+<!-- */-->
+<!--onMounted(() => {-->
+<!--  loadData();-->
+<!--});-->
+<!--const loadData = async () => {-->
+<!--  const res = await CommentControllerService.listCommentVoByPageUsingPost({-->
+<!--    ...queryParams.value,-->
+<!--  });-->
+<!--  if (res.code === 0) {-->
+<!--    commentList.value = commentList.value.concat(res.data.records);-->
+<!--  } else {-->
+<!--    message.error("加载失败，" + res.message);-->
+<!--  }-->
+<!--  if (islogin()) {-->
+<!--    hasLogin.value = true;-->
+<!--  } else {-->
+<!--    hasLogin.value = false;-->
+<!--  }-->
+<!--  hasMore.value = res.data.total > commentList.value.length;-->
 <!--};-->
+<!--//选择表情包-->
+<!--const choseEmoji = (inner: any) => {-->
+<!--  textarea.value += "[" + inner + "]";-->
+<!--};-->
+<!--const analyzeEmoji = (cont: any) => {-->
+<!--  //编译表情替换成图片展示出来-->
+<!--  var pattern1 = /\[[\u4e00-\u9fa5]+\]/g;-->
+<!--  var pattern2 = /\[[\u4e00-\u9fa5]+\]/;-->
+<!--  var content = cont.match(pattern1);-->
+<!--  var str = cont;-->
+<!--  var src = "";-->
+<!--  if (content) {-->
+<!--    for (var i = 0; i < content.length; i++) {-->
+<!--      for (var j = 0; j < OwOlist.value.length; j++) {-->
+<!--        if ("[" + OwOlist.value[j].title + "]" == content[i]) {-->
+<!--          src = require(`../../static/emot/${OwOlist.value[j].url}`);-->
+<!--          break;-->
+<!--        }-->
+<!--      }-->
+<!--      str = str.replace(pattern2, '<img src="' + src + '"/>');-->
+<!--    }-->
+<!--    console.log(str);-->
+<!--  }-->
+<!--  return str;-->
+<!--};-->
+<!--const islogin = () => {-->
+<!--  return store.state.user?.loginUser?.userName !== "未登录";-->
+<!--};-->
+<!--const respondMsg = (-->
+<!--  rootid: number,-->
+<!--  toCommentid: number,-->
+<!--  toCommentUserid: number,-->
+<!--  event: MouseEvent-->
+<!--) => {-->
+<!--  //回复留言-->
+<!--  if (islogin()) {-->
+<!--    const dom = event.currentTarget as HTMLElement;-->
+<!--    const parentDom = dom.parentNode;-->
+<!--    // 更新 isRespond 的值-->
+<!--    isRespond.value = true;-->
+<!--    addParams.value.rootId = rootid;-->
+<!--    addParams.value.toCommentId = toCommentid;-->
+<!--    addParams.value.toCommentUserId = toCommentUserid;-->
+<!--    // 假设你要将 respondBox 添加到父元素中-->
+<!--    if (parentDom && respondBox.value) {-->
+<!--      parentDom.appendChild(respondBox.value);-->
+<!--    }-->
+<!--  } else {-->
+<!--    if (confirm("登录后即可点赞和收藏，是否前往登录页面?")) {-->
+<!--      // 用户点击了“确定”-->
+<!--      // 存储当前页面路径，登录成功后跳回来-->
+<!--      localStorage.setItem("logUrl", router.currentRoute.value.fullPath);-->
+<!--      router.push({ path: "/user/login" });-->
+<!--    } else {-->
+<!--      // 用户点击了“取消”-->
+<!--      // 可以在这里执行取消操作，如果需要的话-->
+<!--    }-->
+<!--  }-->
+<!--};-->
+
+<!--// sendMsg 函数-->
+<!--const sendMsg = async () => {-->
+<!--  if (textarea.value) {-->
+<!--    sendTip.value = "咻~~";-->
+<!--    await CommentControllerService.addCommentUsingPost({-->
+<!--      ...addParams.value,-->
+<!--      content: textarea.value,-->
+<!--    });-->
+<!--    addParams.value.rootId = -1;-->
+<!--    addParams.value.toCommentId = -1;-->
+<!--    addParams.value.toCommentUserId = -1;-->
+<!--    textarea.value = "";-->
+
+<!--    routeChange();-->
+<!--    removeRespond();-->
+<!--    var timer02 = setTimeout(function () {-->
+<!--      sendTip.value = "发送~";-->
+<!--      clearTimeout(timer02);-->
+<!--    }, 1000);-->
+<!--  } else {-->
+<!--    sendTip.value = "内容不能为空~";-->
+<!--    const timer = setTimeout(() => {-->
+<!--      sendTip.value = "发送~";-->
+<!--      clearTimeout(timer);-->
+<!--    }, 3000);-->
+<!--  }-->
+<!--};-->
+
+<!--const routeChange = () => {-->
+<!--  //重新加载-->
+<!--  //是否要 重置 current（当前页面数量）取决于你-->
+<!--  // queryParams.value.current = 1;-->
+<!--  loadData();-->
+<!--};-->
+
+<!--const removeRespond = () => {-->
+<!--  //取消回复留言-->
+<!--  isRespond.value = false;-->
+<!--  addParams.value.rootId = -1;-->
+<!--  addParams.value.toCommentId = -1;-->
+<!--  addParams.value.toCommentUserId = -1;-->
+<!--  if (tmsgBox.value && respondBox.value && listDom.value) {-->
+<!--    tmsgBox.value.insertBefore(respondBox.value, listDom.value);-->
+<!--  }-->
+<!--};-->
+
+<!--const addMoreFun = () => {-->
+<!--  //查看更多-->
+<!--  queryParams.value.current++;-->
+<!--  loadData();-->
+<!--};-->
+
+<!--defineExpose({-->
+<!--  respondMsg,-->
+<!--});-->
 <!--</script>-->
 
-<!--<style>-->
+<!--<style scoped>-->
+<!--#homeView {-->
+<!--}-->
+
+<!--.tcolors-bg {-->
+<!--  background: #97dffd;-->
+<!--  transition: all 0.3s ease-in-out;-->
+<!--}-->
+
+<!--.tcolors-bg:hover {-->
+<!--  background: #48456d;-->
+<!--}-->
+
+<!--.action {-->
+<!--  display: inline-block;-->
+<!--  padding: 0 4px;-->
+<!--  color: var(&#45;&#45;color-text-1);-->
+<!--  line-height: 24px;-->
+<!--  background: transparent;-->
+<!--  border-radius: 2px;-->
+<!--  cursor: pointer;-->
+<!--  transition: all 0.1s ease;-->
+<!--}-->
+
+<!--.action:hover {-->
+<!--  background: var(&#45;&#45;color-fill-3);-->
+<!--}-->
+
 <!--.tmsgBox {-->
 <!--  position: relative;-->
 <!--  background: #fff;-->
@@ -452,11 +438,6 @@
 <!--  background: #f4f6f7;-->
 <!--  height: 100px;-->
 <!--  margin-bottom: 10px;-->
-<!--}-->
-
-<!--.OwO {-->
-<!--  position: relative;-->
-<!--  z-index: 1;-->
 <!--}-->
 
 <!--.OwO .OwO-logo {-->
@@ -957,37 +938,13 @@
 <!--  }-->
 <!--}-->
 
-<!--/*用户输入表单*/-->
-<!--.tmsg-r-info {-->
-<!--  margin: 10px 0;-->
-<!--}-->
-
-<!--.tmsg-r-info input {-->
-<!--  height: 30px;-->
-<!--  border-radius: 4px;-->
-<!--  background: #f4f6f7;-->
-<!--}-->
-
-<!--.tmsg-r-info .info-submit {-->
-<!--  margin: 10px 0;-->
-<!--  text-align: center;-->
-<!--}-->
-
-<!--.tmsg-r-info .info-submit p,-->
-<!--.tmsg-commentshow h1 {-->
+<!--.tmsg-commentshow {-->
 <!--  /*background: #97dffd;*/-->
-<!--  color: #fff;-->
-<!--  border-radius: 5px;-->
-<!--  cursor: pointer;-->
-<!--  /*transition: all .3s ease-in-out;*/-->
-<!--  height: 30px;-->
-<!--  line-height: 30px;-->
-<!--  text-align: center;-->
+<!--  /*transform: scale(1.05);*/-->
+<!--  /*padding-left: 70px;*/-->
+<!--  /*width: 80%;*/-->
 <!--}-->
 
-<!--/*.tmsg-r-info .info-submit p:hover{-->
-<!--    background: #47456d;-->
-<!--}*/-->
 <!--/*评论列表*/-->
 <!--.tmsg-comments .tmsg-comments-tip {-->
 <!--  display: block;-->
@@ -997,78 +954,7 @@
 <!--  font-size: 20px;-->
 <!--}-->
 
-<!--.tmsg-commentlist {-->
-<!--  margin-bottom: 20px;-->
-<!--}-->
-
 <!--.tmsg-commentshow > .tmsg-commentlist {-->
 <!--  border-bottom: 1px solid #e5eaed;-->
-<!--}-->
-
-<!--.tmsg-c-item {-->
-<!--  border-top: 1px solid #e5eaed;-->
-<!--}-->
-
-<!--.tmsg-c-item article {-->
-<!--  margin: 20px 0;-->
-<!--}-->
-
-<!--.tmsg-c-item article header {-->
-<!--  margin-bottom: 10px;-->
-<!--}-->
-
-<!--.tmsg-c-item article header img {-->
-<!--  width: 65px;-->
-<!--  height: 65px;-->
-<!--  border-radius: 50%;-->
-<!--  float: left;-->
-<!--  transition: all 0.4s ease-in-out;-->
-<!--  -webkit-transition: all 0.4s ease-in-out;-->
-<!--  margin-right: 15px;-->
-<!--  object-fit: cover;-->
-<!--}-->
-
-<!--.tmsg-c-item article header img:hover {-->
-<!--  transform: rotate(360deg);-->
-<!--  -webkit-transform: rotate(360deg);-->
-<!--}-->
-
-<!--.tmsg-c-item article header .i-name {-->
-<!--  font-size: 14px;-->
-<!--  margin: 5px 8px 7px 0;-->
-<!--  color: #444;-->
-<!--  font-weight: bold;-->
-<!--  display: inline-block;-->
-<!--}-->
-
-<!--.tmsg-c-item article header .i-class {-->
-<!--  display: inline-block;-->
-<!--  margin-left: 10px;-->
-<!--  background: #dff0d8;-->
-<!--  color: #3c763d;-->
-<!--  border-radius: 5px;-->
-<!--  padding: 3px 6px;-->
-<!--  font-size: 12px;-->
-<!--  font-weight: 400;-->
-<!--}-->
-
-<!--.tmsg-c-item article header .i-time {-->
-<!--  color: #aaa;-->
-<!--  font-size: 12px;-->
-<!--}-->
-
-<!--.tmsg-c-item article section {-->
-<!--  margin-left: 80px;-->
-<!--}-->
-
-<!--.tmsg-c-item article section p img {-->
-<!--  vertical-align: middle;-->
-<!--}-->
-
-<!--.tmsg-c-item article section .tmsg-replay {-->
-<!--  margin: 10px 0;-->
-<!--  font-size: 12px;-->
-<!--  color: #64609e;-->
-<!--  cursor: pointer;-->
 <!--}-->
 <!--</style>-->

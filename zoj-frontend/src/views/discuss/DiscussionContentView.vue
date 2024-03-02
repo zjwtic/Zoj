@@ -53,6 +53,7 @@
             {{ post?.dislikeNum }}
           </a-space>
         </a-space>
+        <!--        <DiscussionCommentView :id="props.id" />-->
       </a-layout-content>
     </a-layout>
   </div>
@@ -70,6 +71,7 @@ import message from "@arco-design/web-vue/es/message";
 import { useRouter } from "vue-router";
 import moment from "moment";
 import MdViewer from "@/components/MdViewer.vue";
+import DiscussionCommentView from "@/views/discuss/DiscussionCommentView.vue";
 
 interface Props {
   id: string;
