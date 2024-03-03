@@ -1,4 +1,7 @@
-<!-- 留言评论模块 -->
+<!--<template>-->
+<!--  &lt;!&ndash;  <div id="homeView">这是 主页</div>&ndash;&gt;-->
+<!--&lt;!&ndash;  <DiscussionCommentView :id="mdid" />&ndash;&gt;-->
+<!--</template>-->
 <template>
   <div class="tmsgBox" ref="tmsgBox">
     <div class="tmsg-respond" ref="respondBox">
@@ -9,12 +12,7 @@
         >
       </h3>
       <form>
-        <a-space
-          direction="vertical"
-          size="large"
-          fill
-          style="padding-bottom: 20px"
-        >
+        <a-space direction="vertical" size="large" fill>
           <a-textarea
             v-model="textarea"
             placeholder="说点什么呢``"
@@ -35,7 +33,7 @@
                 :key="'oitem' + index"
                 @click="choseEmoji(oitem.title)"
               >
-                <img :src="require(`../../static/emot/${oitem.url}`)" alt="" />
+                <img :src="require(`../static/emot/${oitem.url}`)" alt="" />
               </li>
             </ul>
             <div class="OwO-bar">
@@ -45,7 +43,7 @@
             </div>
           </div>
         </div>
-        <a-space direction="vertical" fill style="padding-top: 15px">
+        <a-space direction="vertical" fill>
           <a-button type="primary" long @click="sendMsg">
             {{ sendTip }}
           </a-button>
@@ -113,10 +111,10 @@
             </div>
           </a-comment>
         </div>
-        <h3 v-show="hasMore" class="tcolors-bg" @click="addMoreFun">
+        <h1 v-show="hasMore" class="tcolors-bg" @click="addMoreFun">
           查看更多
-        </h3>
-        <h3 v-show="!hasMore" class="tcolors-bg">没有更多</h3>
+        </h1>
+        <h1 v-show="!hasMore" class="tcolors-bg">没有更多</h1>
       </div>
     </div>
   </div>
@@ -126,29 +124,21 @@ import DiscussionCommentView from "@/views/discuss/DiscussionCommentView.vue";
 import { IconHeart, IconMessage, IconStar } from "@arco-design/web-vue/es/icon";
 import moment from "moment";
 import { useRouter } from "vue-router";
-import { onMounted, ref, watchEffect, defineProps, withDefaults } from "vue";
+import { onMounted, ref } from "vue";
 import {
   CommentAddRequest,
   CommentControllerService,
   CommentQueryRequest,
-} from "../../../generated";
+} from "../../generated";
 import message from "@arco-design/web-vue/es/message";
 import { defineExpose } from "vue";
 import { useStore } from "vuex";
-
-interface Props {
-  id: string;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  id: () => "",
-});
 
 const hasMore = ref(false); // 是否有更多
 
 const sendTip = ref("发送");
 // const mdid = BigInt(1759947916743127042);
-const textarea = ref("");
+const textarea = ref("212");
 
 const commentList = ref([]); //
 
@@ -167,11 +157,11 @@ const listDom = ref<HTMLElement | null>(null); // 假设 respondBox 是一个元
 const queryParams = ref({
   current: 1,
   pageSize: 10,
-  postId: props.id,
+  postId: "1759947916743127042",
 }) as any;
 
 const addParams = ref({
-  postId: props.id,
+  postId: "1759947916743127042",
   rootId: -1,
   toCommentId: -1,
   toCommentUserId: -1,
@@ -290,7 +280,7 @@ const analyzeEmoji = (cont: any) => {
     for (var i = 0; i < content.length; i++) {
       for (var j = 0; j < OwOlist.value.length; j++) {
         if ("[" + OwOlist.value[j].title + "]" == content[i]) {
-          src = require(`../../static/emot/${OwOlist.value[j].url}`);
+          src = require(`../static/emot/${OwOlist.value[j].url}`);
           break;
         }
       }
@@ -393,6 +383,9 @@ defineExpose({
 </script>
 
 <style scoped>
+#homeView {
+}
+
 .tcolors-bg {
   text-align: center;
   background: #97dffd;
@@ -946,6 +939,23 @@ defineExpose({
   }
 }
 
+/*用户输入表单*/
+.tmsg-r-info {
+  margin: 10px 0;
+}
+
+.tmsg-r-info input {
+  height: 30px;
+  border-radius: 4px;
+  background: #f4f6f7;
+}
+
+.tmsg-r-info .info-submit {
+  margin: 10px 0;
+  text-align: center;
+}
+
+.tmsg-r-info .info-submit p,
 .tmsg-commentshow {
   /*background: #97dffd;*/
   /*transform: scale(1.05);*/
@@ -953,6 +963,9 @@ defineExpose({
   /*width: 80%;*/
 }
 
+/*.tmsg-r-info .info-submit p:hover{
+    background: #47456d;
+}*/
 /*评论列表*/
 .tmsg-comments .tmsg-comments-tip {
   display: block;
@@ -962,7 +975,55 @@ defineExpose({
   font-size: 20px;
 }
 
+.tmsg-commentlist {
+  margin-bottom: 20px;
+}
+
 .tmsg-commentshow > .tmsg-commentlist {
   border-bottom: 1px solid #e5eaed;
 }
+
+.tmsg-c-item {
+  border-top: 1px solid #e5eaed;
+}
 </style>
+
+<!--<template>-->
+<!--  <div class="far_box">-->
+<!--    <p>-->
+<!--      <a href="https://github.com/shershen08/emoji-vue"-->
+<!--        >引入github的表情项目包</a-->
+<!--      >-->
+<!--    </p>-->
+<!--    <div>显示内容：{{ myText }}</div>-->
+
+<!--    <VueEmoji ref="emoji" :value="myText" @input="onInput" />-->
+<!--    &lt;!&ndash;    <button @click="clearTextarea">clear</button>&ndash;&gt;-->
+<!--  </div>-->
+<!--</template>-->
+
+<!--<script setup="ts">-->
+<!--import VueEmoji from "emoji-vue";-->
+<!--import { onMounted, ref, defineProps, withDefaults } from "vue";-->
+
+<!--const myText = ref("dsdsd");-->
+
+<!--const onInput = (event) => {-->
+<!--  myText.value = event.data;-->
+<!--  // event.data contains the value of the textarea-->
+<!--};-->
+<!--</script>-->
+
+<!--<style lang="less" scope>-->
+<!--.far_box {-->
+<!--  height: 100vh; //扩大盒子高度&#45;&#45;这样在点击表情外的地方时候 触发失焦 关闭表情盒子-->
+<!--  text-align: left;-->
+<!--}-->
+<!--</style>-->
+
+<!--removeRespond-->
+<!--\sendMsg-->
+<!--respondMsg修改-->
+<!--v-show="haslogin"-->
+<!--<h1 v-show='hasMore' class="tcolors-bg" @click="addMoreFun" >查看更多</h1>-->
+<!--<h1 v-show='!hasMore' class="tcolors-bg" >没有更多</h1>-->

@@ -98,12 +98,9 @@ const doUpdate = (post: Post) => {
   });
 };
 const doshow = (post: Post) => {
-  // router.push({
-  //   path: "/update/discussion",
-  //   query: {
-  //     id: post.id,
-  //   },
-  // });
+  router.push({
+    path: `/view/discussion/${post.id}`,
+  });
 };
 
 const loadData = async () => {
