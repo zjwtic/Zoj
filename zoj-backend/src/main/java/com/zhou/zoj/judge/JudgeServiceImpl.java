@@ -1,6 +1,7 @@
 package com.zhou.zoj.judge;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zhou.zoj.common.ErrorCode;
 import com.zhou.zoj.exception.BusinessException;
 import com.zhou.zoj.judge.codesandbox.CodeSandbox;
@@ -11,13 +12,20 @@ import com.zhou.zoj.judge.codesandbox.model.ExecuteCodeResponse;
 import com.zhou.zoj.judge.strategy.JudgeContext;
 import com.zhou.zoj.model.dto.question.JudgeCase;
 import com.zhou.zoj.judge.codesandbox.model.JudgeInfo;
+import com.zhou.zoj.model.entity.PostThumb;
 import com.zhou.zoj.model.entity.Question;
 import com.zhou.zoj.model.entity.QuestionSubmit;
+import com.zhou.zoj.model.entity.User;
+import com.zhou.zoj.model.enums.JudgeInfoMessageEnum;
 import com.zhou.zoj.model.enums.QuestionSubmitStatusEnum;
+import com.zhou.zoj.service.PostThumbService;
 import com.zhou.zoj.service.QuestionService;
 import com.zhou.zoj.service.QuestionSubmitService;
+import com.zhou.zoj.service.UserService;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -28,6 +36,7 @@ public class JudgeServiceImpl implements JudgeService {
 
     @Value("${codesandbox.type:example}")
     private String type;
+
 
     @Resource
     private QuestionService questionService;
@@ -100,12 +109,60 @@ public class JudgeServiceImpl implements JudgeService {
             questionSubmitUpdate.setStatus(QuestionSubmitStatusEnum.FAILED.getValue());
         }
         questionSubmitUpdate.setJudgeInfo(JSONUtil.toJsonStr(judgeInfo));
+
+//        更新前先拿到现有是否有成功过
+        Long userId = questionSubmit.getUserId();
+        Boolean userAccepted = questionSubmitService.isUserAccepted(questionId, userId);
+
         update = questionSubmitService.updateById(questionSubmitUpdate);
         if (!update) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "题目状态更新错误");
         }
+
+        Boolean isSuccess = judgeInfo.getMessage().equals(JudgeInfoMessageEnum.ACCEPTED.getValue());
+        //        进行提交数量 和 通过数量 更新
+        synchronized (String.valueOf(questionId).intern()) {
+            doQuestionAcceptedAndSubmitNumInner(questionId, isSuccess,userAccepted);
+        }
+
+
         QuestionSubmit questionSubmitResult = questionSubmitService.getById(questionSubmitId);
         return questionSubmitResult;
 
     }
+
+    /**
+     * 重置 提交和成功数   规则： 同一个用户成功 1次 算1次   成功多次也算1次   提交数 即 只要提交了就算1次
+     *
+     * @param questionId   当前questionid
+     * @param isSuccess    这次是否成功
+     * @param userAccepted 曾经是否成功过
+     * @return
+     */
+    public int doQuestionAcceptedAndSubmitNumInner(long questionId,  boolean isSuccess,boolean userAccepted) {
+        boolean result;
+        if (!isSuccess || userAccepted) {
+            result = questionService.update()
+                    .eq("id", questionId)
+                    .setSql("submitNum = submitNum + 1")
+                    .update();
+            if (result) {
+                return result ? -1 : 0;
+            } else {
+                throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+            }
+        } else {
+            result = questionService.update()
+                    .eq("id", questionId)
+                    .setSql("submitNum = submitNum + 1, acceptedNum = acceptedNum + 1")
+                    .update();
+            if (result) {
+                return result ? -1 : 0;
+            } else {
+                throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+            }
+        }
+    }
+
+
 }

@@ -7,12 +7,15 @@ import com.zhou.zoj.common.ErrorCode;
 import com.zhou.zoj.constant.CommonConstant;
 import com.zhou.zoj.exception.BusinessException;
 import com.zhou.zoj.judge.JudgeService;
+import com.zhou.zoj.judge.codesandbox.model.JudgeInfo;
+import com.zhou.zoj.mapper.QuestionMapper;
 import com.zhou.zoj.model.dto.question.QuestionQueryRequest;
 import com.zhou.zoj.model.dto.questionsubmit.QuestionSubmitAddRequest;
 import com.zhou.zoj.model.dto.questionsubmit.QuestionSubmitQueryRequest;
 import com.zhou.zoj.model.entity.Question;
 import com.zhou.zoj.model.entity.QuestionSubmit;
 import com.zhou.zoj.model.entity.User;
+import com.zhou.zoj.model.enums.JudgeInfoMessageEnum;
 import com.zhou.zoj.model.enums.QuestionSubmitLanguageEnum;
 import com.zhou.zoj.model.enums.QuestionSubmitStatusEnum;
 import com.zhou.zoj.model.vo.QuestionSubmitVO;
@@ -26,6 +29,7 @@ import com.zhou.zoj.utils.SqlUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -47,7 +51,7 @@ import java.util.stream.Collectors;
 public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper, QuestionSubmit>
         implements QuestionSubmitService {
     @Resource
-    private QuestionService questionService;
+    private QuestionMapper questionMapper;
 
     @Resource
     private UserService userService;
@@ -74,7 +78,7 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         }
         long questionId = questionSubmitAddRequest.getQuestionId();
         // 判断实体是否存在，根据类别获取实体
-        Question question = questionService.getById(questionId);
+        Question question = questionMapper.selectById(questionId);
         if (question == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
@@ -192,7 +196,29 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         return questionSubmitVOPage;
     }
 
+    @Override
+    public Boolean isUserAccepted(long questionId, long userId) {
+        if (!ObjectUtils.isNotEmpty(questionId) || !ObjectUtils.isNotEmpty(userId)) {
+            return false;
+        }
+        QueryWrapper<QuestionSubmit> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("questionId", questionId);
+        queryWrapper.eq("userId", userId);
+        queryWrapper.eq("status", QuestionSubmitStatusEnum.SUCCEED.getValue());
+        queryWrapper.eq("isDelete", false);
+        List<QuestionSubmit> questionSubmitList = list(queryWrapper);
+        List<QuestionSubmitVO> questionSubmitVOList = questionSubmitList.stream().
+                map(questionSubmit -> QuestionSubmitVO.objToVo(questionSubmit))
+                .collect(Collectors.toList());
+        for (QuestionSubmitVO questionSubmitVO : questionSubmitVOList) {
+            JudgeInfo judgeInfo = questionSubmitVO.getJudgeInfo();
+            if (judgeInfo.getMessage().equals(JudgeInfoMessageEnum.ACCEPTED.getValue())) {
+                return true;
+            }
+        }
+        return false;
 
+    }
 }
 
 

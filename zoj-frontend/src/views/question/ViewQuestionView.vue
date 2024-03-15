@@ -33,8 +33,11 @@
             </a-card>
           </a-tab-pane>
           <a-tab-pane key="comment" title="题解">暂无题解</a-tab-pane>
-          <a-tab-pane key="answer" title="提交记录"
-            >提交记录模块开发中。。
+          <!--          <a-tab-pane key="answer" title="提交记录"-->
+          <!--            >提交记录模块开发中。。-->
+          <!--          </a-tab-pane>-->
+          <a-tab-pane key="answer" title="提交记录">
+            <QuestionSubmitAnalyseView :id="props.id" />
           </a-tab-pane>
         </a-tabs>
       </a-col>
@@ -86,6 +89,7 @@ import moment from "moment";
 import MdEditor from "@/components/MdEditor.vue";
 import CodeEditor from "@/components/CodeEditor.vue";
 import MdViewer from "@/components/MdViewer.vue";
+import QuestionSubmitAnalyseView from "@/views/questionSubmit/QuestionSubmitAnalyseView.vue";
 
 interface Props {
   id: string;

@@ -8,12 +8,14 @@ import com.zhou.zoj.common.ErrorCode;
 import com.zhou.zoj.constant.CommonConstant;
 import com.zhou.zoj.exception.BusinessException;
 import com.zhou.zoj.exception.ThrowUtils;
+import com.zhou.zoj.mapper.QuestionSubmitMapper;
 import com.zhou.zoj.model.dto.question.QuestionQueryRequest;
 import com.zhou.zoj.model.entity.*;
 import com.zhou.zoj.model.vo.QuestionVO;
 import com.zhou.zoj.model.vo.UserVO;
 import com.zhou.zoj.service.QuestionService;
 import com.zhou.zoj.mapper.QuestionMapper;
+import com.zhou.zoj.service.QuestionSubmitService;
 import com.zhou.zoj.service.UserService;
 import com.zhou.zoj.utils.SqlUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -24,6 +26,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -38,17 +41,20 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
-* @author 32335
-* @description 针对表【question(题目)】的数据库操作Service实现
-* @createDate 2023-11-23 11:14:17
-*/
+ * @author 32335
+ * @description 针对表【question(题目)】的数据库操作Service实现
+ * @createDate 2023-11-23 11:14:17
+ */
 @Service
 public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
-    implements QuestionService{
+        implements QuestionService {
     private final static Gson GSON = new Gson();
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private QuestionSubmitService questionSubmitService;
 
 
     @Override
@@ -137,6 +143,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         }
         UserVO userVO = userService.getUserVO(user);
         questionVO.setUserVO(userVO);
+        Boolean userAccepted = questionSubmitService.isUserAccepted(questionId, userId);
+        questionVO.setIsAccepted(userAccepted);
 //        // 2. 已登录，获取用户点赞、收藏状态
 //        User loginUser = userService.getLoginUserPermitNull(request);
 //        if (loginUser != null) {
@@ -199,13 +207,19 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
                 user = userIdUserListMap.get(userId).get(0);
             }
             questionVO.setUserVO(userService.getUserVO(user));
+            Long questionId = question.getId();
+            User loginUser = userService.getLoginUserPermitNull(request);
+            Boolean userAccepted = false;
+            if (loginUser != null) {
+                userAccepted = questionSubmitService.isUserAccepted(questionId, loginUser.getId());
+            }
+            questionVO.setIsAccepted(userAccepted);
             return questionVO;
         }).collect(Collectors.toList());
         questionVOPage.setRecords(questionVOList);
         return questionVOPage;
     }
 }
-
 
 
 

@@ -2,6 +2,7 @@ package com.zhou.zoj.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zhou.zoj.judge.codesandbox.model.JudgeInfo;
 import com.zhou.zoj.model.dto.question.QuestionQueryRequest;
 import com.zhou.zoj.model.dto.questionsubmit.QuestionSubmitAddRequest;
 import com.zhou.zoj.model.dto.questionsubmit.QuestionSubmitQueryRequest;
@@ -9,10 +10,15 @@ import com.zhou.zoj.model.entity.Question;
 import com.zhou.zoj.model.entity.QuestionSubmit;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhou.zoj.model.entity.User;
+import com.zhou.zoj.model.enums.JudgeInfoMessageEnum;
+import com.zhou.zoj.model.enums.QuestionSubmitStatusEnum;
 import com.zhou.zoj.model.vo.QuestionSubmitVO;
 import com.zhou.zoj.model.vo.QuestionVO;
+import org.apache.commons.lang3.ObjectUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * @author 32335
@@ -57,4 +63,12 @@ public interface QuestionSubmitService extends IService<QuestionSubmit> {
      */
     Page<QuestionSubmitVO> getQuestionSubmitVOPage(Page<QuestionSubmit> questionSubmitPage, User loginUser);
 
+    /**
+     * 获取用户是否代码运行成功
+     *
+     * @param questionId
+     * @param userId
+     * @return
+     */
+     Boolean isUserAccepted(long questionId, long userId) ;
 }

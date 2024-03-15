@@ -92,7 +92,14 @@ public class QuestionVO implements Serializable {
      */
     private UserVO userVO;
 
+    /**
+     * 是否完成
+     */
+    private Boolean isAccepted;
+
     private static final long serialVersionUID = 1L;
+
+
 
 
     /**
