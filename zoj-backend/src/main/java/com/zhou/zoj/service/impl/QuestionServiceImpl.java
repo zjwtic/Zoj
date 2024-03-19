@@ -143,7 +143,9 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         }
         UserVO userVO = userService.getUserVO(user);
         questionVO.setUserVO(userVO);
-        Boolean userAccepted = questionSubmitService.isUserAccepted(questionId, userId);
+//        注意上面 是创建题目的用户信息id 我们需要的是当前用户id
+        User loginUser = userService.getLoginUserPermitNull(request);
+        Boolean userAccepted = questionSubmitService.isUserAccepted(questionId, loginUser.getId());
         questionVO.setIsAccepted(userAccepted);
 //        // 2. 已登录，获取用户点赞、收藏状态
 //        User loginUser = userService.getLoginUserPermitNull(request);

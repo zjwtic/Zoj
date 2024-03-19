@@ -30,9 +30,19 @@ public class UserUpdateMyRequest implements Serializable {
     private String userAccount;
 
     /**
-     * 用户密码
+     * 用户原来密码
      */
     private String userPassword;
+
+    /**
+     * 用户确认密码
+     */
+    private String accessPassword;
+
+    /**
+     * 用户待更改的密码
+     */
+    private String updatePassword;
 
     private static final long serialVersionUID = 1L;
 }

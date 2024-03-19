@@ -116,9 +116,9 @@
     </a-card>
     <a-modal
       width="30%"
-      :visible="visible"
+      :visible="updateMessageVisible"
       placement="right"
-      @ok="handleOk"
+      @ok="handleOk(0)"
       @cancel="closeModel"
       unmountOnClose
     >
@@ -181,6 +181,31 @@
         </a-form-item>
       </a-form>
     </a-modal>
+
+    <a-modal
+      width="30%"
+      :visible="updatePasswordVisible"
+      placement="right"
+      @ok="handleOk(1)"
+      @cancel="closeModel"
+      unmountOnClose
+    >
+      <a-form-item field="password" label="原密码" validate-trigger="blur">
+        <a-input-password
+          v-model="accessPassword"
+          placeholder="请输入此账号原来密码..."
+        />
+      </a-form-item>
+      <a-form-item field="password" label="现密码" validate-trigger="blur">
+        <a-input-password
+          v-model="password"
+          placeholder="请输入要修改的密码..."
+        />
+      </a-form-item>
+      <a-form-item field="password2" label="确认密码" validate-trigger="blur">
+        <a-input-password v-model="password2" placeholder="请输入确认密码..." />
+      </a-form-item>
+    </a-modal>
     <div>
       <a-button
         shape="round"
@@ -197,8 +222,17 @@
         size="medium"
         type="outline"
         style="margin: 10px"
-        @click="openModalForm"
+        @click="openModalForm(0)"
         >修改用户信息
+      </a-button>
+      <a-button
+        shape="round"
+        status="normal"
+        size="medium"
+        type="outline"
+        style="margin: 10px"
+        @click="openModalForm(1)"
+        >修改用户密码
       </a-button>
     </div>
   </div>
@@ -223,6 +257,13 @@ const file = ref();
  */
 const store = useStore();
 let loginUser = store.state.user.loginUser;
+
+const updateMessageVisible = ref(false);
+const updatePasswordVisible = ref(false);
+
+const password = ref();
+const accessPassword = ref();
+const password2 = ref();
 
 const data = [
   {
@@ -263,7 +304,7 @@ const data = [
   },
 ];
 
-const visible = ref(false);
+// const visible = ref(false);
 const updateForm = ref<UserUpdateMyRequest>({
   ...store.state.user?.loginUser,
 });
@@ -292,34 +333,102 @@ const uploadAvatar = async () => {
 /**
  * 打开弹窗
  */
-const openModalForm = () => {
-  userAvatarImg.value =
-    updateForm.value?.userAvatar ??
-    "https://assets.leetcode.cn/aliyun-lc-upload/default_avatar.png?x-oss-process=image%2Fformat%2Cwebp";
-  visible.value = true;
+// const openModalForm = () => {
+//   userAvatarImg.value =
+//     updateForm.value?.userAvatar ??
+//     "https://assets.leetcode.cn/aliyun-lc-upload/default_avatar.png?x-oss-process=image%2Fformat%2Cwebp";
+//   visible.value = true;
+// };
+
+/**
+ * 打开弹窗
+ */
+const openModalForm = (type: number) => {
+  if (type == 0) {
+    userAvatarImg.value =
+      updateForm.value?.userAvatar ??
+      "https://assets.leetcode.cn/aliyun-lc-upload/default_avatar.png?x-oss-process=image%2Fformat%2Cwebp";
+    updateMessageVisible.value = true;
+  } else if (type == 1) {
+    updatePasswordVisible.value = true;
+  }
 };
 /**
  * 确定修改按钮
  */
-const handleOk = async () => {
-  if (file.value) {
-    await uploadAvatar();
-  }
-  const res = await UserControllerService.updateMyUserUsingPost({
-    ...updateForm.value,
-    userAvatar: userAvatarImg.value,
-  });
-  if (res.code === 0) {
-    Message.success("更新成功！");
-    visible.value = false;
-    // await store.dispatch("user/getLoginUser");
-    location.reload();
-  } else {
-    Message.error("更新失败！", res.msg);
+// const handleOk = async () => {
+//   if (file.value) {
+//     await uploadAvatar();
+//   }
+//   const res = await UserControllerService.updateMyUserUsingPost({
+//     ...updateForm.value,
+//     userAvatar: userAvatarImg.value,
+//   });
+//   if (res.code === 0) {
+//     Message.success("更新成功！");
+//     visible.value = false;
+//     // await store.dispatch("user/getLoginUser");
+//     location.reload();
+//   } else {
+//     Message.error("更新失败！", res.msg);
+//   }
+// };
+const handleOk = async (type: number) => {
+  if (type == 0) {
+    if (file.value) {
+      await uploadAvatar();
+    }
+    const res = await UserControllerService.updateMyUserUsingPost({
+      ...updateForm.value,
+      userAvatar: userAvatarImg.value,
+    });
+    if (res.code === 0) {
+      Message.success("更新成功！");
+      updateMessageVisible.value = false;
+      // await store.dispatch("user/getLoginUser");
+      location.reload();
+    } else {
+      Message.error("更新失败！", res.msg);
+    }
+  } else if (type == 1) {
+    if (!password.value) {
+      Message.error("请输入密码！");
+      return;
+    }
+    if (!accessPassword.value) {
+      Message.error("请输入原密码！");
+      return;
+    }
+    if (password.value != password2.value) {
+      Message.error("确认密码错误,两次密码不一致！");
+      return;
+    }
+    const res = await UserControllerService.updateMyUserUsingPost({
+      ...updateForm.value,
+      accessPassword: accessPassword.value,
+      updatePassword: password.value,
+    });
+    if (res.code === 0) {
+      Message.success("更新密码成功！");
+      updatePasswordVisible.value = false;
+      // await store.dispatch("user/getLoginUser");
+      location.reload();
+    } else if (res.code === 1) {
+      Message.error("原密码不一致", res.meg);
+    } else if (res.code === 40000) {
+      Message.error("密码设置过短，至少8位", res.meg);
+    } else {
+      Message.error("更新密码失败", res.meg);
+    }
   }
 };
+// const closeModel = () => {
+//   visible.value = false;
+// };
+
 const closeModel = () => {
-  visible.value = false;
+  updateMessageVisible.value = false;
+  updatePasswordVisible.value = false;
 };
 /**
  * 回到首页
