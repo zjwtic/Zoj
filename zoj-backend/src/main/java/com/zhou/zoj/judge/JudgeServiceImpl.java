@@ -42,6 +42,9 @@ public class JudgeServiceImpl implements JudgeService {
     private QuestionService questionService;
 
     @Resource
+    private UserService userService;
+
+    @Resource
     private QuestionSubmitService questionSubmitService;
 
     @Resource
@@ -122,7 +125,7 @@ public class JudgeServiceImpl implements JudgeService {
         Boolean isSuccess = judgeInfo.getMessage().equals(JudgeInfoMessageEnum.ACCEPTED.getValue());
         //        进行提交数量 和 通过数量 更新
         synchronized (String.valueOf(questionId).intern()) {
-            doQuestionAcceptedAndSubmitNumInner(questionId, isSuccess,userAccepted);
+            doQuestionAcceptedAndSubmitNumInner(questionId, userId, isSuccess, userAccepted);
         }
 
 
@@ -135,11 +138,13 @@ public class JudgeServiceImpl implements JudgeService {
      * 重置 提交和成功数   规则： 同一个用户成功 1次 算1次   成功多次也算1次   提交数 即 只要提交了就算1次
      *
      * @param questionId   当前questionid
+     * @param userId   当前userId
      * @param isSuccess    这次是否成功
      * @param userAccepted 曾经是否成功过
      * @return
      */
-    public int doQuestionAcceptedAndSubmitNumInner(long questionId,  boolean isSuccess,boolean userAccepted) {
+    @Transactional
+    public int doQuestionAcceptedAndSubmitNumInner(long questionId, long userId, boolean isSuccess, boolean userAccepted) {
         boolean result;
         if (!isSuccess || userAccepted) {
             result = questionService.update()
@@ -156,8 +161,17 @@ public class JudgeServiceImpl implements JudgeService {
                     .eq("id", questionId)
                     .setSql("submitNum = submitNum + 1, acceptedNum = acceptedNum + 1")
                     .update();
+
             if (result) {
-                return result ? -1 : 0;
+                result = userService.update()
+                        .eq("id", userId)
+                        .setSql("acceptedNum = acceptedNum + 1")
+                        .update();
+                if (result) {
+                    return result ? -1 : 0;
+                } else {
+                    throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+                }
             } else {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR);
             }

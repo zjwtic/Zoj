@@ -30,6 +30,10 @@ export default {
     updateUser(state, payload) {
       state.loginUser = payload;
       if (state.loginUser.userName === null) {
+        // 生成一个随机数，并格式化为字符串
+        // const randomNumber = Math.random().toString(36).substring(7);
+        // 将随机数附加到"Zoj用户"后面
+        // state.loginUser.userName = "Zoj用户" + randomNumber;
         state.loginUser.userName = "Zoj用户";
       }
     },

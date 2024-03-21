@@ -4,10 +4,12 @@
 /* eslint-disable */
 
 export type User = {
+    acceptedNum?: number;
     createTime?: string;
     id?: number;
     isDelete?: number;
     mpOpenId?: string;
+    points?: number;
     unionId?: string;
     updateTime?: string;
     userAccount?: string;

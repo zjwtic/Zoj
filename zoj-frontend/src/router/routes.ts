@@ -23,6 +23,7 @@ import DiscussionShowView from "@/views/discuss/DiscussionShowView.vue";
 import DiscussionContentView from "@/views/discuss/DiscussionContentView.vue";
 import AddDiscussionView from "@/views/discuss/AddDiscussionView.vue";
 import ManageDiscussionView from "@/views/discuss/ManageDiscussionView.vue";
+import RanksView from "@/views/rank/RanksView.vue";
 
 import ACCESS_ENUM from "@/access/accessEnum";
 
@@ -203,6 +204,11 @@ export const routes: Array<RouteRecordRaw> = [
     path: "/questions",
     name: "浏览题目",
     component: QuestionsView,
+  },
+  {
+    path: "/ranks",
+    name: "排行榜",
+    component: RanksView,
   },
   {
     path: "/question_submit",

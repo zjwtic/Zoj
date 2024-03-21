@@ -2,6 +2,7 @@ package com.zhou.zoj.model.vo;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
@@ -35,6 +36,16 @@ public class UserVO implements Serializable {
      */
     private String userRole;
 
+
+    /**
+     * 用户通过题目数
+     */
+    private Integer acceptedNum;
+
+    /**
+     * 用户比赛积分数
+     */
+    private Integer points;
     /**
      * 创建时间
      */
