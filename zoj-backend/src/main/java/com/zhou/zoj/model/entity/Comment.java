@@ -10,9 +10,6 @@ import java.util.Date;
 
 /**
  * 评论表(Comment)表实体类
- *
- * @author makejava
- * @since 2023-10-13 15:32:37
  */
 
 @TableName(value = "comment")
