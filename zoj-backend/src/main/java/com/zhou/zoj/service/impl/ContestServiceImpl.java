@@ -51,6 +51,7 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, Contest>
     @Resource
     private QuestionService questionService;
 
+
     @Override
     public void validContest(Contest contest, boolean add) {
         if (contest == null) {
