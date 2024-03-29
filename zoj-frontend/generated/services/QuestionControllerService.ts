@@ -3,6 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { BaseResponse_boolean_ } from '../models/BaseResponse_boolean_';
+import type { BaseResponse_List_QuestionVO_ } from '../models/BaseResponse_List_QuestionVO_';
+import type { BaseResponse_List_SelectQuestionVO_ } from '../models/BaseResponse_List_SelectQuestionVO_';
 import type { BaseResponse_long_ } from '../models/BaseResponse_long_';
 import type { BaseResponse_Page_Question_ } from '../models/BaseResponse_Page_Question_';
 import type { BaseResponse_Page_QuestionSubmitVO_ } from '../models/BaseResponse_Page_QuestionSubmitVO_';
@@ -127,6 +129,46 @@ id?: number,
             query: {
                 'id': id,
             },
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+
+    /**
+     * listAllQuestionVO
+     * @returns BaseResponse_List_SelectQuestionVO_ OK
+     * @returns any Created
+     * @throws ApiError
+     */
+    public static listAllQuestionVoUsingPost(): CancelablePromise<BaseResponse_List_SelectQuestionVO_ | any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/question/list/all/vo',
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+
+    /**
+     * getQuestionVOByIds
+     * @param ids ids
+     * @returns BaseResponse_List_QuestionVO_ OK
+     * @returns any Created
+     * @throws ApiError
+     */
+    public static getQuestionVoByIdsUsingPost(
+ids: Array<number>,
+): CancelablePromise<BaseResponse_List_QuestionVO_ | any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/question/list/ids/vo',
+            body: ids,
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,

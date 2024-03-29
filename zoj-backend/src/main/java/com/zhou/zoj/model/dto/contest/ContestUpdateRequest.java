@@ -1,5 +1,6 @@
 package com.zhou.zoj.model.dto.contest;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -20,8 +21,10 @@ public class ContestUpdateRequest implements Serializable {
     //比赛描述
     private String contestDescription;
     //比赛开始时间
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startTime;
     //比赛结束时间
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
     //比赛时间
     private Integer duration;

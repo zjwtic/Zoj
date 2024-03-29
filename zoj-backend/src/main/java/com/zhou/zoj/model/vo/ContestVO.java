@@ -1,9 +1,11 @@
 package com.zhou.zoj.model.vo;
 
 import cn.hutool.json.JSONUtil;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.zhou.zoj.model.entity.Contest;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -27,8 +29,12 @@ public class ContestVO implements Serializable {
     //比赛描述
     private String contestDescription;
     //比赛开始时间
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 到后台，例如入参报文到后台
     private Date startTime;
     //比赛结束时间
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") // 到后台，例如入参报文到后台
     private Date endTime;
     //比赛时间
     private Integer duration;

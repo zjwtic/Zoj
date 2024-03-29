@@ -1,6 +1,7 @@
 <template>
   <div id="addDiscussionView">
-    <h2>添加讨论</h2>
+    <h2 v-if="!updatePage">添加讨论</h2>
+    <h2 v-if="updatePage">更新讨论</h2>
     <a-form :model="form" label-align="left">
       <a-form-item field="title" label="标题" style="width: 900px">
         <a-input v-model="form.title" placeholder="请输入标题" />

@@ -1,0 +1,320 @@
+<template>
+  <div id="doContestView">
+    <!--    <a-row :gutter="[24, 24]">-->
+    <!--      <a-col :md="12" xs="24">-->
+    <!--        <a-tabs default-active-key="question">-->
+    <!--          <a-tab-pane key="question" title="题目">-->
+    <!--            <a-card v-if="question" :title="question.title">-->
+    <!--              <a-descriptions-->
+    <!--                title="判题条件"-->
+    <!--                :column="{ xs: 1, md: 2, lg: 3 }"-->
+    <!--              >-->
+    <!--                <a-descriptions-item label="时间限制">-->
+    <!--                  {{ question.judgeConfig.timeLimit ?? 0 }}-->
+    <!--                </a-descriptions-item>-->
+    <!--                <a-descriptions-item label="内存限制">-->
+    <!--                  {{ question.judgeConfig.memoryLimit ?? 0 }}-->
+    <!--                </a-descriptions-item>-->
+    <!--                <a-descriptions-item label="堆栈限制">-->
+    <!--                  {{ question.judgeConfig.stackLimit ?? 0 }}-->
+    <!--                </a-descriptions-item>-->
+    <!--              </a-descriptions>-->
+    <!--              <MdViewer :value="question.content || ''" />-->
+    <!--              <template #extra>-->
+    <!--                <a-space wrap>-->
+    <!--                  <a-tag-->
+    <!--                    v-for="(tag, index) of question.tags"-->
+    <!--                    :key="index"-->
+    <!--                    color="green"-->
+    <!--                    >{{ tag }}-->
+    <!--                  </a-tag>-->
+    <!--                </a-space>-->
+    <!--              </template>-->
+    <!--            </a-card>-->
+    <!--          </a-tab-pane>-->
+    <!--          <a-tab-pane key="comment" title="题解">暂无题解</a-tab-pane>-->
+    <!--          &lt;!&ndash;          <a-tab-pane key="answer" title="提交记录"&ndash;&gt;-->
+    <!--          &lt;!&ndash;            >提交记录模块开发中。。&ndash;&gt;-->
+    <!--          &lt;!&ndash;          </a-tab-pane>&ndash;&gt;-->
+    <!--          <a-tab-pane key="answer" title="提交记录">-->
+    <!--            <QuestionSubmitAnalyseView :id="props.id" />-->
+    <!--          </a-tab-pane>-->
+    <!--        </a-tabs>-->
+    <!--      </a-col>-->
+    <!--      <a-col :md="12" xs="24">-->
+    <!--        <a-form :model="form" layout="inline">-->
+    <!--          <a-form-item-->
+    <!--            field="language"-->
+    <!--            label="编程语言"-->
+    <!--            style="min-width: 240px"-->
+    <!--          >-->
+    <!--            <a-select-->
+    <!--              v-model="form.language"-->
+    <!--              :style="{ width: '320px' }"-->
+    <!--              placeholder="选择编程语言"-->
+    <!--            >-->
+    <!--              <a-option>java</a-option>-->
+    <!--              <a-option>cpp</a-option>-->
+    <!--              &lt;!&ndash;              <a-option>go</a-option>&ndash;&gt;-->
+    <!--              &lt;!&ndash;              待扩展语言&ndash;&gt;-->
+    <!--              &lt;!&ndash;              <a-option>html</a-option>&ndash;&gt;-->
+    <!--              <a-option>python</a-option>-->
+    <!--            </a-select>-->
+    <!--          </a-form-item>-->
+    <!--        </a-form>-->
+    <!--        <CodeEditor-->
+    <!--          :value="form.code"-->
+    <!--          :language="form.language"-->
+    <!--          :handle-change="changeCode"-->
+    <!--        />-->
+    <!--        <a-divider size="0" />-->
+    <!--        <a-button type="primary" style="min-width: 200px" @click="doSubmit">-->
+    <!--          提交代码-->
+    <!--        </a-button>-->
+    <!--      </a-col>-->
+    <!--    </a-row>-->
+    {{ contest }}
+
+    <!--    <a-col :flex="1">-->
+    <!--      <a-countdown-->
+    <!--        title="Countdown"-->
+    <!--        :value="now + 1000 * contest?.duration"-->
+    <!--        :now="now + 1000 * contest?.duration"-->
+    <!--        @finish="handleFinish"-->
+    <!--        @click="updateRemainingTime"-->
+    <!--      />-->
+    <!--      &lt;!&ndash;      <a-countdown&ndash;&gt;-->
+    <!--      &lt;!&ndash;        title="Countdown"&ndash;&gt;-->
+    <!--      &lt;!&ndash;        :value="now"&ndash;&gt;-->
+    <!--      &lt;!&ndash;        :now="now"&ndash;&gt;-->
+    <!--      &lt;!&ndash;        @finish="handleFinish"&ndash;&gt;-->
+    <!--      &lt;!&ndash;      />&ndash;&gt;-->
+    <!--    </a-col>-->
+
+    <a-tabs default-active-key="question">
+      <a-tab-pane
+        v-for="(question, index) of questions"
+        :key="'question' + index"
+        :title="question.title"
+      >
+        <a-row :gutter="[24, 24]">
+          <a-col :md="12" xs="24">
+            <a-card v-if="question" :title="question.title">
+              <a-descriptions
+                title="判题条件"
+                :column="{ xs: 1, md: 2, lg: 3 }"
+              >
+                <a-descriptions-item label="时间限制">
+                  {{ question.judgeConfig.timeLimit ?? 0 }}
+                </a-descriptions-item>
+                <a-descriptions-item label="内存限制">
+                  {{ question.judgeConfig.memoryLimit ?? 0 }}
+                </a-descriptions-item>
+                <a-descriptions-item label="堆栈限制">
+                  {{ question.judgeConfig.stackLimit ?? 0 }}
+                </a-descriptions-item>
+              </a-descriptions>
+              <MdViewer :value="question.content || ''" />
+              <template #extra>
+                <a-space wrap>
+                  <a-tag
+                    v-for="(tag, index) of question.tags"
+                    :key="index"
+                    color="green"
+                    >{{ tag }}
+                  </a-tag>
+                </a-space>
+              </template>
+            </a-card>
+          </a-col>
+          <a-col :md="12" xs="24">
+            <a-form :model="form" layout="inline">
+              <a-form-item
+                field="language"
+                label="编程语言"
+                style="min-width: 240px"
+              >
+                <a-select
+                  v-model="form.language"
+                  :style="{ width: '320px' }"
+                  placeholder="选择编程语言"
+                >
+                  <a-option>java</a-option>
+                  <a-option>cpp</a-option>
+                  <!--              <a-option>go</a-option>-->
+                  <!--              待扩展语言-->
+                  <!--              <a-option>html</a-option>-->
+                  <a-option>python</a-option>
+                </a-select>
+              </a-form-item>
+            </a-form>
+            <CodeEditor
+              :value="form.code"
+              :language="form.language"
+              :handle-change="changeCode"
+            />
+          </a-col>
+        </a-row>
+      </a-tab-pane>
+    </a-tabs>
+
+    <!--    <a-col :flex="1">-->
+    <!--      <a-countdown-->
+    <!--        title="Countdown"-->
+    <!--        :value="now + remainingTime"-->
+    <!--        :now="now + remainingTime"-->
+    <!--        @finish="handleFinish"-->
+    <!--        @tick="updateRemainingTime"-->
+    <!--      />-->
+    <!--    </a-col>-->
+    <!--    <a-col :flex="1">-->
+    <!--      <a-countdown-->
+    <!--        title="Countdown"-->
+    <!--        :value="now + 1000 * 60 * 60 * 2"-->
+    <!--        :now="now"-->
+    <!--      />-->
+    <!--    </a-col>-->
+  </div>
+</template>
+
+<script setup lang="ts">
+import { onMounted, ref, defineProps, withDefaults } from "vue";
+import {
+  ContestControllerService,
+  ContestVO,
+  QuestionControllerService,
+  QuestionSubmitAddRequest,
+} from "../../../generated";
+import message from "@arco-design/web-vue/es/message";
+import { useRouter } from "vue-router";
+import moment from "moment";
+import MdEditor from "@/components/MdEditor.vue";
+import CodeEditor from "@/components/CodeEditor.vue";
+import MdViewer from "@/components/MdViewer.vue";
+import QuestionSubmitAnalyseView from "@/views/questionSubmit/QuestionSubmitAnalyseView.vue";
+
+const now = Date.now();
+
+interface Props {
+  id: string;
+}
+
+//
+// const form = ref<QuestionSubmitAddRequest>({
+//   language: "java",
+//   code: "",
+// });
+
+// /**
+//  * 提交代码
+//  */
+// const doSubmit = async () => {
+//   if (!question.value?.id) {
+//     return;
+//   }
+//   console.log(form.value);
+//   const res = await QuestionControllerService.doQuestionSubmitUsingPost({
+//     ...form.value,
+//     questionId: question.value.id,
+//   });
+//   if (res.code === 0) {
+//     message.success("提交成功");
+//   } else {
+//     message.error("提交失败," + res.message);
+//   }
+// };
+//
+const contest = ref<ContestVO>();
+const form = ref<QuestionSubmitAddRequest>({
+  language: "java",
+  code: "",
+});
+const changeCode = (value: string) => {
+  form.value.code = value;
+};
+
+const remainingTime = ref();
+const props = withDefaults(defineProps<Props>(), {
+  id: () => "",
+});
+
+const handleFinish = () => {
+  message.success("比赛完成");
+};
+
+const questions = ref() as any;
+// const changeCode = (value: string) => {
+//   form.value.code = value;
+// };
+
+const loadData = async () => {
+  const res = await ContestControllerService.getContestVoByIdUsingGet(
+    props.id as any
+  );
+  if (res.code === 0) {
+    contest.value = res.data;
+    console.log("123");
+  } else {
+    message.error("加载失败，" + res.message);
+  }
+  const qres = await QuestionControllerService.getQuestionVoByIdsUsingPost(
+    contest?.value?.selectContestIds as any
+  );
+  if (qres.code === 0) {
+    questions.value = qres.data as any;
+  } else {
+    message.error("加载失败，" + qres.message);
+  }
+};
+
+// const updateRemainingTime = () => {
+//   // 倒计时每秒更新时保存剩余时间
+//   saveRemainingTime(remainingTime.value);
+// };
+//
+// const loadRemainingTime = () => {
+//   console.log("ha");
+//   // 从持久化存储加载剩余时间
+//   const savedTime = localStorage.getItem("remainingTime");
+//   if (savedTime) {
+//     remainingTime.value = parseInt(savedTime, 10);
+//   } else {
+//     console.log("1");
+//     // 如果没有保存的剩余时间，则开始新的倒计时
+//     startCountdown();
+//   }
+// };
+//
+// const saveRemainingTime = (time: any) => {
+//   // 将剩余时间保存到持久化存储
+//   localStorage.setItem("remainingTime", time.toString());
+// };
+//
+// const startCountdown = () => {
+//   console.log("2");
+//   // 开始新的倒计时
+//   if (contest?.value?.duration) {
+//     console.log("hahaahh");
+//     remainingTime.value = 1000 * contest?.value?.duration;
+//   }
+// };
+
+/**
+ * 页面加载时，请求数据
+ */
+onMounted(async () => {
+  await loadData();
+  // loadRemainingTime();
+});
+</script>
+
+<style scoped>
+#doContestView {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+#doContestView .arco-space-horizontal .arco-space-item {
+  margin-bottom: 0 !important;
+}
+</style>

@@ -3,15 +3,16 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type UserQueryRequest = {
+export type ContestQueryRequest = {
+    contestDescription?: string;
+    contestName?: string;
     current?: number;
+    duration?: number;
+    endTime?: string;
     id?: number;
-    mpOpenId?: string;
     pageSize?: number;
     sortField?: string;
     sortOrder?: string;
-    unionId?: string;
-    userName?: string;
-    userProfile?: string;
-    userRole?: string;
+    startTime?: string;
+    userId?: number;
 };

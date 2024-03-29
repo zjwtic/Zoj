@@ -22,6 +22,10 @@ import QuestionSubmitShowView from "@/views/questionSubmit/QuestionSubmitShowVie
 import DiscussionShowView from "@/views/discuss/DiscussionShowView.vue";
 import DiscussionContentView from "@/views/discuss/DiscussionContentView.vue";
 import AddDiscussionView from "@/views/discuss/AddDiscussionView.vue";
+import AddContestView from "@/views/contest/AddContestView.vue";
+import ContestsView from "@/views/contest/ContestsView.vue";
+import DoContestView from "@/views/contest/DoContestView.vue";
+import ManageContestView from "@/views/contest/ManageContestView.vue";
 import ManageDiscussionView from "@/views/discuss/ManageDiscussionView.vue";
 import RanksView from "@/views/rank/RanksView.vue";
 
@@ -65,6 +69,44 @@ export const routes: Array<RouteRecordRaw> = [
     path: "/usermessage/show",
     name: "用户信息展示",
     component: UserMessageView,
+  },
+
+  {
+    path: "/add/contest",
+    name: "添加比赛",
+    component: AddContestView,
+  },
+  {
+    path: "/contests",
+    name: "比赛",
+    component: ContestsView,
+  },
+  {
+    path: "/update/contest",
+    name: "更新比赛",
+    component: AddContestView,
+    meta: {
+      access: ACCESS_ENUM.USER,
+      hideInMenu: true,
+    },
+  },
+  {
+    path: "/manage/contest",
+    name: "管理比赛",
+    component: ManageContestView,
+    // meta: {
+    //   access: ACCESS_ENUM.ADMIN,
+    // },
+  },
+  {
+    path: "/do/contest/:id",
+    name: "在线比赛",
+    component: DoContestView,
+    props: true,
+    meta: {
+      access: ACCESS_ENUM.USER,
+      hideInMenu: true,
+    },
   },
   // {
   //   path: "/topic",
@@ -205,32 +247,32 @@ export const routes: Array<RouteRecordRaw> = [
     name: "浏览题目",
     component: QuestionsView,
   },
-  {
-    path: "/ranks",
-    name: "排行榜",
-    component: RanksView,
-  },
-  {
-    path: "/question_submit",
-    name: "浏览题目提交",
-    component: QuestionSubmitView,
-  },
-  {
-    path: "/question_submit_by_own",
-    name: "浏览自己的题目提交",
-    component: QuestionSubmitByOwnView,
-  },
-  {
-    path: "/usermessage/avatar",
-    name: "头像展示",
-    component: UserAvatarView,
-  },
-  {
-    path: "/noAuth",
-    name: "无权限",
-    component: NoAuthView,
-    meta: {
-      hideInMenu: true,
-    },
-  },
+  // {
+  //   path: "/ranks",
+  //   name: "排行榜",
+  //   component: RanksView,
+  // },
+  // {
+  //   path: "/question_submit",
+  //   name: "浏览题目提交",
+  //   component: QuestionSubmitView,
+  // },
+  // {
+  //   path: "/question_submit_by_own",
+  //   name: "浏览自己的题目提交",
+  //   component: QuestionSubmitByOwnView,
+  // },
+  // {
+  //   path: "/usermessage/avatar",
+  //   name: "头像展示",
+  //   component: UserAvatarView,
+  // },
+  // {
+  //   path: "/noAuth",
+  //   name: "无权限",
+  //   component: NoAuthView,
+  //   meta: {
+  //     hideInMenu: true,
+  //   },
+  // },
 ];

@@ -1,5 +1,7 @@
 package com.zhou.zoj.controller;
 
+import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
 import com.zhou.zoj.annotation.AuthCheck;
@@ -19,6 +21,7 @@ import com.zhou.zoj.model.entity.QuestionSubmit;
 import com.zhou.zoj.model.entity.User;
 import com.zhou.zoj.model.vo.QuestionSubmitVO;
 import com.zhou.zoj.model.vo.QuestionVO;
+import com.zhou.zoj.model.vo.SelectQuestionVO;
 import com.zhou.zoj.service.QuestionService;
 import com.zhou.zoj.service.QuestionSubmitService;
 import com.zhou.zoj.service.UserService;
@@ -30,6 +33,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 题目接口
@@ -70,12 +74,12 @@ public class QuestionController {
         if (tags != null) {
             question.setTags(GSON.toJson(tags));
         }
-        List<JudgeCase>judgeCase=questionAddRequest.getJudgeCase();
-        if(judgeCase!=null){
+        List<JudgeCase> judgeCase = questionAddRequest.getJudgeCase();
+        if (judgeCase != null) {
             question.setJudgeCase(GSON.toJson(judgeCase));
         }
-        JudgeConfig judgeConfig=questionAddRequest.getJudgeConfig();
-        if(judgeConfig!=null){
+        JudgeConfig judgeConfig = questionAddRequest.getJudgeConfig();
+        if (judgeConfig != null) {
             question.setJudgeConfig(GSON.toJson(judgeConfig));
         }
         questionService.validQuestion(question, true);
@@ -124,7 +128,7 @@ public class QuestionController {
     @PostMapping("/list/page")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Page<Question>> listQuestionByPage(@RequestBody QuestionQueryRequest questionQueryRequest,
-                                                   HttpServletRequest request) {
+                                                           HttpServletRequest request) {
         long current = questionQueryRequest.getCurrent();
         long size = questionQueryRequest.getPageSize();
         Page<Question> questionPage = questionService.page(new Page<>(current, size),
@@ -144,19 +148,19 @@ public class QuestionController {
         if (questionUpdateRequest == null || questionUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        Question question = new Question(); 
+        Question question = new Question();
         BeanUtils.copyProperties(questionUpdateRequest, question);
         List<String> tags = questionUpdateRequest.getTags();
         if (tags != null) {
             question.setTags(GSON.toJson(tags));
         }
 
-        List<JudgeCase>judgeCase=questionUpdateRequest.getJudgeCase();
-        if(judgeCase!=null){
+        List<JudgeCase> judgeCase = questionUpdateRequest.getJudgeCase();
+        if (judgeCase != null) {
             question.setJudgeCase(GSON.toJson(judgeCase));
         }
-        JudgeConfig judgeConfig=questionUpdateRequest.getJudgeConfig();
-        if(judgeConfig!=null){
+        JudgeConfig judgeConfig = questionUpdateRequest.getJudgeConfig();
+        if (judgeConfig != null) {
             question.setJudgeConfig(GSON.toJson(judgeConfig));
         }
         // 参数校验
@@ -220,7 +224,7 @@ public class QuestionController {
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<QuestionVO>> listQuestionVOByPage(@RequestBody QuestionQueryRequest questionQueryRequest,
-            HttpServletRequest request) {
+                                                               HttpServletRequest request) {
         long current = questionQueryRequest.getCurrent();
         long size = questionQueryRequest.getPageSize();
         // 限制爬虫
@@ -239,7 +243,7 @@ public class QuestionController {
      */
     @PostMapping("/my/list/page/vo")
     public BaseResponse<Page<QuestionVO>> listMyQuestionVOByPage(@RequestBody QuestionQueryRequest questionQueryRequest,
-            HttpServletRequest request) {
+                                                                 HttpServletRequest request) {
         if (questionQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -276,12 +280,12 @@ public class QuestionController {
             question.setTags(GSON.toJson(tags));
         }
 
-        List<JudgeCase>judgeCase=questionEditRequest.getJudgeCase();
-        if(judgeCase!=null){
+        List<JudgeCase> judgeCase = questionEditRequest.getJudgeCase();
+        if (judgeCase != null) {
             question.setJudgeCase(GSON.toJson(judgeCase));
         }
-        JudgeConfig judgeConfig=questionEditRequest.getJudgeConfig();
-        if(judgeConfig!=null){
+        JudgeConfig judgeConfig = questionEditRequest.getJudgeConfig();
+        if (judgeConfig != null) {
             question.setJudgeConfig(GSON.toJson(judgeConfig));
         }
 
@@ -301,7 +305,28 @@ public class QuestionController {
     }
 
 
+    @PostMapping("/list/all/vo")
+    public BaseResponse<List<SelectQuestionVO>> listAllQuestionVO(HttpServletRequest request) {
+        // 仅管理员可获取所有list
+        if (!userService.isAdmin(request)) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
+        QueryWrapper<Question> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("isDelete", false);
+        List<Question> questionList = questionService.list(queryWrapper);
+        List<SelectQuestionVO> selectQuestionVOList = questionList.stream()
+                .map(question -> new SelectQuestionVO(question.getId(), question.getTitle(), JSONUtil.toList(question.getTags(), String.class)))
+                .collect(Collectors.toList());
+        return ResultUtils.success(selectQuestionVOList);
+    }
 
+    @PostMapping("/list/ids/vo")
+    public BaseResponse<List<QuestionVO>> getQuestionVOByIds(@RequestBody List<Long> ids) {
+        List<Question> questionList = questionService.listByIds(ids);
+        List<QuestionVO> questionVOS = questionList.stream()
+                .map(question -> QuestionVO.objToVo(question)).collect(Collectors.toList());
+        return ResultUtils.success(questionVOS);
+    }
 
 
     /**
@@ -338,7 +363,7 @@ public class QuestionController {
         final User loginUser = userService.getLoginUser(request);
         Page<QuestionSubmit> questionSubmitPage = questionSubmitService.page(new Page<>(current, size),
                 questionSubmitService.getQueryWrapper(questionSubmitQueryRequest));
-        return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionSubmitPage,loginUser ));
+        return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionSubmitPage, loginUser));
 
     }
 
