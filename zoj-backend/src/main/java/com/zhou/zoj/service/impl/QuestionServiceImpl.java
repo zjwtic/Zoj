@@ -145,7 +145,11 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         questionVO.setUserVO(userVO);
 //        注意上面 是创建题目的用户信息id 我们需要的是当前用户id
         User loginUser = userService.getLoginUserPermitNull(request);
-        Boolean userAccepted = questionSubmitService.isUserAccepted(questionId, loginUser.getId());
+        Boolean userAccepted = false;
+        if (loginUser != null) {
+            userAccepted = questionSubmitService.isUserAccepted(questionId, loginUser.getId());
+        }
+
         questionVO.setIsAccepted(userAccepted);
 //        // 2. 已登录，获取用户点赞、收藏状态
 //        User loginUser = userService.getLoginUserPermitNull(request);
@@ -199,6 +203,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
 //            List<QuestionFavour> questionFavourList = quest ionFavourMapper.selectList(questionFavourQueryWrapper);
 //            questionFavourList.forEach(questionFavour -> questionIdHasFavourMap.put(questionFavour.getQuestionId(), true));
 //        }
+        User loginUser = userService.getLoginUserPermitNull(request);
         // 填充信息
         List<QuestionVO> questionVOList = questionList.stream().map(question -> {
             QuestionVO questionVO = QuestionVO.objToVo(question);
@@ -210,7 +215,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
             }
             questionVO.setUserVO(userService.getUserVO(user));
             Long questionId = question.getId();
-            User loginUser = userService.getLoginUserPermitNull(request);
             Boolean userAccepted = false;
             if (loginUser != null) {
                 userAccepted = questionSubmitService.isUserAccepted(questionId, loginUser.getId());

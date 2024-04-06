@@ -4,6 +4,7 @@ import HomeView from "@/views/HomeView.vue";
 import AdminView from "@/views/AdminView.vue";
 import NoAuthView from "@/views/NoAuthView.vue";
 import UserLayout from "@/layouts/UserLayout.vue";
+import DoContestLayout from "@/layouts/DoContestLayout.vue";
 import UserLoginView from "@/views/user/UserLoginView.vue";
 import UserRegisterView from "@/views/user/UserRegisterView.vue";
 import UserAvatarView from "@/views/usermessage/UserAvatarView.vue";
@@ -54,6 +55,24 @@ export const routes: Array<RouteRecordRaw> = [
   },
 
   {
+    path: "/online",
+    name: "在线",
+    component: DoContestLayout,
+    children: [
+      {
+        path: "/online/contest/:id",
+        name: "在线比赛",
+        component: DoContestView,
+        props: true,
+      },
+    ],
+    meta: {
+      access: ACCESS_ENUM.USER,
+      hideInMenu: true,
+    },
+  },
+
+  {
     path: "/home",
     name: "主页",
     component: HomeView,
@@ -98,16 +117,17 @@ export const routes: Array<RouteRecordRaw> = [
     //   access: ACCESS_ENUM.ADMIN,
     // },
   },
-  {
-    path: "/do/contest/:id",
-    name: "在线比赛",
-    component: DoContestView,
-    props: true,
-    meta: {
-      access: ACCESS_ENUM.USER,
-      hideInMenu: true,
-    },
-  },
+  // {
+  //   path: "/do/contest/:id",
+  //   name: "在线比赛",
+  //   component: DoContestView,
+  //   props: true,
+  //   meta: {
+  //     access: ACCESS_ENUM.USER,
+  //     hideInMenu: true,
+  //   },
+  // },
+  // },
   // {
   //   path: "/topic",
   //   name: "题库",

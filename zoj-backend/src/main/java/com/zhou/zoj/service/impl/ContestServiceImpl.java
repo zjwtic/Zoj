@@ -18,6 +18,7 @@ import com.zhou.zoj.model.entity.User;
 import com.zhou.zoj.model.enums.QuestionSubmitStatusEnum;
 import com.zhou.zoj.model.vo.ContestVO;
 import com.zhou.zoj.model.vo.UserVO;
+import com.zhou.zoj.service.ContestResultService;
 import com.zhou.zoj.service.ContestService;
 import com.zhou.zoj.service.QuestionService;
 import com.zhou.zoj.service.UserService;
@@ -51,6 +52,9 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, Contest>
     @Resource
     private QuestionService questionService;
 
+
+    @Resource
+    private ContestResultService contestResultService;
 
     @Override
     public void validContest(Contest contest, boolean add) {
@@ -145,12 +149,16 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, Contest>
         }
         UserVO userVO = userService.getUserVO(user);
         contestVO.setUserVO(userVO);
+
 ////        注意上面 是创建比赛的用户信息id 我们需要的是当前用户id
         // todo contestVO 可能需要 user是否做了contest信息    可能是bool  也可能是 contestResultId
 //        todo bool
-//        User loginUser = userService.getLoginUserPermitNull(request);
-//        Boolean userAccepted = contestSubmitService.isUserAccepted(contestId, loginUser.getId());
-//        contestVO.setIsAccepted(userAccepted);
+        User loginUser = userService.getLoginUserPermitNull(request);
+        Boolean isParticipated = false;
+        if (loginUser != null) {
+            isParticipated = contestResultService.isUserSubmitted(contestId, loginUser.getId());
+        }
+        contestVO.setIsParticipated(isParticipated);
         return contestVO;
     }
 
@@ -167,6 +175,8 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, Contest>
         Set<Long> userIdSet = contestList.stream().map(Contest::getUserId).collect(Collectors.toSet());
         Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream()
                 .collect(Collectors.groupingBy(User::getId));
+
+        User loginUser = userService.getLoginUserPermitNull(request);
         // 填充信息
         List<ContestVO> contestVOList = contestList.stream().map(contest -> {
             ContestVO contestVO = ContestVO.objToVo(contest);
@@ -180,13 +190,13 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, Contest>
 
             // todo contestVO 可能需要 user是否做了contest信息    可能是bool  也可能是 contestResultId
             // todo bool
-//            Long contestId = contest.getId();
-//            User loginUser = userService.getLoginUserPermitNull(request);
-//            Boolean userAccepted = false;
-//            if (loginUser != null) {
-//                userAccepted = contestSubmitService.isUserAccepted(contestId, loginUser.getId());
-//            }
-//            contestVO.setIsAccepted(userAccepted);
+            Long contestId = contest.getId();
+
+            Boolean isParticipated = false;
+            if (loginUser != null) {
+                isParticipated = contestResultService.isUserSubmitted(contestId, loginUser.getId());
+            }
+            contestVO.setIsParticipated(isParticipated);
             return contestVO;
         }).collect(Collectors.toList());
         contestVOPage.setRecords(contestVOList);

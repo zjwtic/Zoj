@@ -4,9 +4,12 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhou.zoj.common.BaseResponse;
 import com.zhou.zoj.common.ErrorCode;
+import com.zhou.zoj.common.ResultUtils;
 import com.zhou.zoj.constant.CommonConstant;
 import com.zhou.zoj.exception.BusinessException;
+import com.zhou.zoj.mapper.ContestMapper;
 import com.zhou.zoj.mapper.ContestResultMapper;
 import com.zhou.zoj.model.dto.contestresult.ContestQuestionData;
 import com.zhou.zoj.model.dto.contestresult.ContestResultAddRequest;
@@ -43,8 +46,10 @@ public class ContestResultServiceImpl extends ServiceImpl<ContestResultMapper, C
     @Resource
     private UserService userService;
 
+    //    @Resource
+//    private ContestService contestService;
     @Resource
-    private ContestService contestService;
+    private ContestMapper contestMapper;
 
     /**
      * 提交题目
@@ -58,7 +63,7 @@ public class ContestResultServiceImpl extends ServiceImpl<ContestResultMapper, C
 
         Long contestId = contestResultAddRequest.getContestId();
         // 判断实体是否存在，根据类别获取实体
-        Contest contest = contestService.getById(contestId);
+        Contest contest = contestMapper.selectById(contestId);
         if (contest == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
@@ -142,6 +147,7 @@ public class ContestResultServiceImpl extends ServiceImpl<ContestResultMapper, C
         return contestResultVOPage;
     }
 
+
     @Override
     public Boolean isUserSubmitted(long contestId, long userId) {
         if (!ObjectUtils.isNotEmpty(contestId) || !ObjectUtils.isNotEmpty(userId)) {
@@ -155,6 +161,37 @@ public class ContestResultServiceImpl extends ServiceImpl<ContestResultMapper, C
         List<ContestResult> contestResultList = list(queryWrapper);
         return contestResultList.size() != 0;
 
+    }
+
+    @Override
+    public Boolean contestResultSubmit(Long userId, Long contestId) {
+        Boolean result = false;
+        if (!ObjectUtils.isNotEmpty(contestId) || !ObjectUtils.isNotEmpty(userId)) {
+            return false;
+        }
+        QueryWrapper<ContestResult> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("contestId", contestId);
+        queryWrapper.eq("userId", userId);
+        queryWrapper.eq("submitStatus", ContestResultStatusEnum.UNSUBMITTED.getValue());
+        queryWrapper.eq("isDelete", false);
+        ContestResult contestResult = getOne(queryWrapper);
+        if (contestResult != null) {
+            contestResult.setSubmitStatus(ContestResultStatusEnum.SUBMITTED.getValue());
+            result = updateById(contestResult);
+        }
+        return result;
+    }
+
+    @Override
+    public List<ContestResultVO> listAllContestResultVO(long contestId) {
+        QueryWrapper<ContestResult> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("isDelete", false);
+        queryWrapper.eq("contestId", contestId);
+        List<ContestResult> contestResultList = list(queryWrapper);
+        List<ContestResultVO> selectQuestionVOList = contestResultList.stream()
+                .map(contestResult -> ContestResultVO.objToVo(contestResult))
+                .collect(Collectors.toList());
+        return selectQuestionVOList;
     }
 }
 

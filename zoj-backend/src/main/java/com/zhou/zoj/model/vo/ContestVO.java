@@ -23,7 +23,7 @@ public class ContestVO implements Serializable {
     //创建用户id
     private Long userId;
     //选择的题目id集合
-    private List<String> selectContestIds;
+    private List<String> selectQuestionIds;
     //比赛名称
     private String contestName;
     //比赛描述
@@ -48,6 +48,8 @@ public class ContestVO implements Serializable {
      */
     private UserVO userVO;
 
+    private Boolean isParticipated;
+
     private static final long serialVersionUID = 1L;
 
 
@@ -63,7 +65,7 @@ public class ContestVO implements Serializable {
         }
         Contest contest = new Contest();
         BeanUtils.copyProperties(contestVO, contest);
-        List<String> selectContestIds = contestVO.getSelectContestIds();
+        List<String> selectContestIds = contestVO.getSelectQuestionIds();
         if (selectContestIds != null) {
             contest.setSelectQuestionIds(JSONUtil.toJsonStr(selectContestIds));
         }
@@ -83,7 +85,7 @@ public class ContestVO implements Serializable {
         ContestVO contestVO = new ContestVO();
         BeanUtils.copyProperties(contest, contestVO);
         List<String> setlectQuestionIdlist = JSONUtil.toList(contest.getSelectQuestionIds(), String.class);
-        contestVO.setSelectContestIds(setlectQuestionIdlist);
+        contestVO.setSelectQuestionIds(setlectQuestionIdlist);
         return contestVO;
     }
 }

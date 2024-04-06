@@ -73,7 +73,7 @@
     <!--        </a-button>-->
     <!--      </a-col>-->
     <!--    </a-row>-->
-    {{ contest }}
+    <!--    {{ contest }}-->
 
     <!--    <a-col :flex="1">-->
     <!--      <a-countdown-->
@@ -91,12 +91,69 @@
     <!--      &lt;!&ndash;      />&ndash;&gt;-->
     <!--    </a-col>-->
 
-    <a-tabs default-active-key="question">
+    <a-space style="padding-bottom: 20px">
+      <a-col :flex="1">
+        <a-countdown
+          :value="now + 1000 * remainingTime"
+          :now="now + 1000 * remainingTime"
+          @finish="submitContest"
+        />
+      </a-col>
+
+      <a-collapse
+        style="padding-left: 350px"
+        :default-active-key="['1']"
+        :bordered="false"
+      >
+        <a-collapse-item header="实时通过情况" key="1">
+          <a-descriptions
+            column="6"
+            :data="contestQuestionAcceptedList"
+            bordered
+            size="mini"
+            layout="inline-horizontal"
+          >
+            <template #label="{ data }">
+              <a-space style="color: black">{{ data.title }}</a-space>
+            </template>
+            <template #value="{ data }">
+              <a-space style="color: red; padding-left: 10px"
+                >{{ data.questionAcceptedNum }}
+              </a-space>
+            </template>
+          </a-descriptions>
+        </a-collapse-item>
+      </a-collapse>
+
+      <a-button
+        type="primary"
+        shape="round"
+        status="danger"
+        size="large"
+        @click="handleClick"
+        style="position: fixed; top: 20px; right: 30px"
+        >交卷
+      </a-button>
+      <a-modal
+        v-model:visible="visible"
+        @ok="submitContest"
+        @cancel="handleCancel"
+        draggable
+      >
+        <template #title> 提示</template>
+        <div>你确定要交卷吗，一旦交卷后就不能在悔改哦~</div>
+      </a-modal>
+    </a-space>
+    <a-tabs type="card-gutter" default-active-key="question0">
       <a-tab-pane
         v-for="(question, index) of questions"
         :key="'question' + index"
-        :title="question.title"
       >
+        <template #title>
+          <span :style="{ color: questionColor(question.id) }">{{
+            question.title
+          }}</span>
+        </template>
         <a-row :gutter="[24, 24]">
           <a-col :md="12" xs="24">
             <a-card v-if="question" :title="question.title">
@@ -141,9 +198,6 @@
                 >
                   <a-option>java</a-option>
                   <a-option>cpp</a-option>
-                  <!--              <a-option>go</a-option>-->
-                  <!--              待扩展语言-->
-                  <!--              <a-option>html</a-option>-->
                   <a-option>python</a-option>
                 </a-select>
               </a-form-item>
@@ -153,6 +207,14 @@
               :language="form.language"
               :handle-change="changeCode"
             />
+            <a-divider size="0" />
+            <a-button
+              type="primary"
+              style="min-width: 200px"
+              @click="doSubmit(question.id)"
+            >
+              提交代码
+            </a-button>
           </a-col>
         </a-row>
       </a-tab-pane>
@@ -166,14 +228,12 @@
     <!--        @finish="handleFinish"-->
     <!--        @tick="updateRemainingTime"-->
     <!--      />-->
-    <!--    </a-col>-->
-    <!--    <a-col :flex="1">-->
-    <!--      <a-countdown-->
-    <!--        title="Countdown"-->
-    <!--        :value="now + 1000 * 60 * 60 * 2"-->
-    <!--        :now="now"-->
-    <!--      />-->
-    <!--    </a-col>-->
+    <!--        </a-col>-->
+
+    <!--    {{ contestResult }}-->
+    <!--    {{ thisTimeIsQuestionAccepted }}-->
+
+    <!--    {{ contestQuestionAcceptedList }}-->
   </div>
 </template>
 
@@ -181,7 +241,9 @@
 import { onMounted, ref, defineProps, withDefaults } from "vue";
 import {
   ContestControllerService,
+  ContestResultControllerService,
   ContestVO,
+  CountdownControllerService,
   QuestionControllerService,
   QuestionSubmitAddRequest,
 } from "../../../generated";
@@ -195,35 +257,141 @@ import QuestionSubmitAnalyseView from "@/views/questionSubmit/QuestionSubmitAnal
 
 const now = Date.now();
 
+const contestQuestionAcceptedList = ref();
+
+const thisTimeIsQuestionAccepted = ref();
+
 interface Props {
   id: string;
 }
 
-//
-// const form = ref<QuestionSubmitAddRequest>({
-//   language: "java",
-//   code: "",
-// });
+const data = [
+  {
+    label: "Name",
+    value: "123",
+  },
+  {
+    label: "Mobile",
+    value: "123",
+  },
+  {
+    label: "Hometown",
+    value: "123",
+  },
+];
 
-// /**
-//  * 提交代码
-//  */
-// const doSubmit = async () => {
-//   if (!question.value?.id) {
-//     return;
-//   }
-//   console.log(form.value);
-//   const res = await QuestionControllerService.doQuestionSubmitUsingPost({
-//     ...form.value,
-//     questionId: question.value.id,
-//   });
-//   if (res.code === 0) {
-//     message.success("提交成功");
-//   } else {
-//     message.error("提交失败," + res.message);
-//   }
-// };
-//
+const questionAccepted = (questionId: number) => {
+  const contestQuestionDatas = contestResult.value?.contestQuestionDatas;
+  for (var i = 0; i < contestQuestionDatas?.length; i++) {
+    var item = contestQuestionDatas[i];
+    if (item.questionId === questionId) {
+      return item.isAccepted;
+    }
+  }
+  return false;
+};
+
+const getAllQuestionAcceptedNum = async () => {
+  const res =
+    await ContestResultControllerService.getQuestionAcceptedNumUsingPost(
+      props.id as any
+    );
+  if (res.code === 0) {
+    contestQuestionAcceptedList.value = res.data;
+  } else {
+    message.error("加载失败，" + res.message);
+  }
+};
+
+const questionColor = (questionId: number) => {
+  // const contestQuestionDatas = contestResult.value?.contestQuestionDatas;
+  // for (var i = 0; i < contestQuestionDatas?.length; i++) {
+  //   var item = contestQuestionDatas[i];
+  //   if (item.questionId === questionId) {
+  //     return item.isAccepted ? "green" : "blue";
+  //   }
+  // }
+  // return "blue";
+  return questionAccepted(questionId) ? "green" : "blue";
+};
+
+const visible = ref(false);
+
+const handleClick = () => {
+  visible.value = true;
+};
+const handleCancel = () => {
+  visible.value = false;
+};
+
+/**
+ * 交卷
+ */
+const submitContest = async () => {
+  visible.value = false;
+  const res = await ContestResultControllerService.contestResultSubmitUsingPost(
+    {
+      contestId: props.id as any,
+    }
+  );
+  if (res.code === 0) {
+    //todo 跳转到
+    message.success("交卷成功");
+  } else {
+    message.error("提交失败," + res.message);
+  }
+};
+
+/**
+ * 提交代码
+ */
+const doSubmit = async (questionId: number) => {
+  if (!questionId) {
+    return;
+  }
+  message.success(
+    "提交成功，请等待结果，结果运行完成后有提示，成功了题目会变绿色"
+  );
+  console.log(form.value);
+  const res = await QuestionControllerService.doQuestionSubmitUsingPost({
+    ...form.value,
+    questionId: questionId,
+  });
+  if (res.code === 0) {
+    await updateContestResult(res.data);
+    await getContestResult(contestResultId.value);
+    await getAllQuestionAcceptedNum();
+    if (thisTimeIsQuestionAccepted.value) {
+      message.success("运行完成,代码正确");
+    } else {
+      message.error("运行错误，代码或者算法存在问题，请仔细检查");
+    }
+  } else {
+    message.error(" 运行失败,可能是服务器缘故，请联系工作人员" + res.message);
+  }
+};
+
+/**
+ * 更改比赛结果
+ */
+const updateContestResult = async (questionSubmitId: number) => {
+  if (!questionSubmitId || !contestResultId.value) {
+    return;
+  }
+  const res = await ContestResultControllerService.updateContestResultUsingPost(
+    {
+      questionSubmitId: questionSubmitId,
+      contestResultId: contestResultId.value,
+    }
+  );
+  if (res.code === 0) {
+    thisTimeIsQuestionAccepted.value = res.data.thisTimeIsQuestionAccepted;
+    // message.success("比赛结果更改成功");
+  } else {
+    message.error("比赛结果更改失败," + res.message);
+  }
+};
+
 const contest = ref<ContestVO>();
 const form = ref<QuestionSubmitAddRequest>({
   language: "java",
@@ -233,7 +401,9 @@ const changeCode = (value: string) => {
   form.value.code = value;
 };
 
-const remainingTime = ref();
+const contestResultId = ref();
+const contestResult = ref();
+
 const props = withDefaults(defineProps<Props>(), {
   id: () => "",
 });
@@ -243,11 +413,10 @@ const handleFinish = () => {
 };
 
 const questions = ref() as any;
-// const changeCode = (value: string) => {
-//   form.value.code = value;
-// };
 
-const loadData = async () => {
+const remainingTime = ref();
+
+const getContestData = async () => {
   const res = await ContestControllerService.getContestVoByIdUsingGet(
     props.id as any
   );
@@ -257,47 +426,85 @@ const loadData = async () => {
   } else {
     message.error("加载失败，" + res.message);
   }
-  const qres = await QuestionControllerService.getQuestionVoByIdsUsingPost(
-    contest?.value?.selectContestIds as any
+};
+
+const getQuestionData = async () => {
+  const res = await QuestionControllerService.getQuestionVoByIdsUsingPost(
+    contest?.value?.selectQuestionIds as any
   );
-  if (qres.code === 0) {
-    questions.value = qres.data as any;
+  if (res.code === 0) {
+    questions.value = res.data as any;
   } else {
-    message.error("加载失败，" + qres.message);
+    message.error("加载失败，" + res.message);
   }
 };
 
-// const updateRemainingTime = () => {
-//   // 倒计时每秒更新时保存剩余时间
-//   saveRemainingTime(remainingTime.value);
-// };
-//
-// const loadRemainingTime = () => {
-//   console.log("ha");
-//   // 从持久化存储加载剩余时间
-//   const savedTime = localStorage.getItem("remainingTime");
-//   if (savedTime) {
-//     remainingTime.value = parseInt(savedTime, 10);
-//   } else {
-//     console.log("1");
-//     // 如果没有保存的剩余时间，则开始新的倒计时
-//     startCountdown();
-//   }
-// };
-//
-// const saveRemainingTime = (time: any) => {
-//   // 将剩余时间保存到持久化存储
-//   localStorage.setItem("remainingTime", time.toString());
-// };
-//
-// const startCountdown = () => {
-//   console.log("2");
-//   // 开始新的倒计时
-//   if (contest?.value?.duration) {
-//     console.log("hahaahh");
-//     remainingTime.value = 1000 * contest?.value?.duration;
-//   }
-// };
+const getRemainingTime = async (duration: number) => {
+  const res = await CountdownControllerService.getRemainingTimeUsingPost({
+    contestId: props.id as any,
+  });
+  if (res.code === 0) {
+    remainingTime.value = res.data as any;
+  } else {
+    await startCountDown(duration);
+    remainingTime.value = duration;
+  }
+};
+
+const startCountDown = async (duration: number) => {
+  const res = await CountdownControllerService.startCountdownUsingPost({
+    contestId: props.id as any,
+    duration: duration,
+  });
+  if (res.code === 0) {
+    console.log("开始倒计时");
+  } else {
+    message.error("加载失败，" + res.message);
+  }
+};
+
+const genContestResult = async () => {
+  const res = await ContestResultControllerService.addContestResultUsingPost({
+    contestId: props.id as any,
+  });
+  if (res.code === 0) {
+    contestResultId.value = res.data;
+  } else {
+    message.error("加载失败" + res.message);
+  }
+};
+
+const getContestResult = async (contestResultId: number) => {
+  const res =
+    await ContestResultControllerService.getContestResultVoByIdUsingGet(
+      contestResultId
+    );
+  if (res.code === 0) {
+    contestResult.value = res.data;
+  } else {
+    message.error("加载失败" + res.message);
+  }
+};
+
+const columns = [
+  {
+    label: "id",
+    value: "questionId",
+  },
+  {
+    label: "比赛名",
+    value: "title",
+  },
+];
+
+const loadData = async () => {
+  await getContestData();
+  await getQuestionData();
+  await getRemainingTime(contest?.value?.duration as any);
+  await genContestResult();
+  await getContestResult(contestResultId.value);
+  await getAllQuestionAcceptedNum();
+};
 
 /**
  * 页面加载时，请求数据

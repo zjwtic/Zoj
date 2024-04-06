@@ -53,12 +53,20 @@
       <template #optional="{ record }">
         <a-space>
           <a-button
+            v-if="!record.isParticipated"
             shape="round"
             status="normal"
             type="primary"
             @click="toContestPage(record)"
-          >
-            比赛
+            >比赛
+          </a-button>
+          <a-button
+            v-if="record.isParticipated"
+            shape="round"
+            status="normal"
+            type="primary"
+            @click="toContestResult(record)"
+            >查看结果
           </a-button>
         </a-space>
       </template>
@@ -76,6 +84,7 @@ import {
 import message from "@arco-design/web-vue/es/message";
 import { useRouter } from "vue-router";
 import moment from "moment";
+import DoContestView from "@/views/contest/DoContestView.vue";
 
 const tableRef = ref();
 
@@ -97,7 +106,7 @@ const makeHoursMinutes = (duration: number) => {
 };
 
 const loadData = async () => {
-  const res = await ContestControllerService.listContestByPageUsingPost({
+  const res = await ContestControllerService.listContestVoByPageUsingPost({
     ...searchParams.value,
     sortField: "createTime",
     sortOrder: "descend",
@@ -204,7 +213,7 @@ const router = useRouter();
  */
 const toContestPage = (contest: Contest) => {
   router.push({
-    path: `/do/contest/${contest.id}`,
+    path: `/online/contest/${contest.id}`,
   });
 };
 
@@ -225,5 +234,25 @@ const doSubmit = () => {
   max-width: 1280px;
   margin: 0 auto;
   border-radius: 10px;
+}
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 </style>

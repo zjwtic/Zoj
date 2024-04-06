@@ -6,9 +6,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhou.zoj.model.dto.contestresult.ContestResultAddRequest;
 import com.zhou.zoj.model.dto.contestresult.ContestResultQueryRequest;
 import com.zhou.zoj.model.entity.ContestResult;
-import com.zhou.zoj.model.entity.ContestResult;
 import com.zhou.zoj.model.entity.User;
 import com.zhou.zoj.model.vo.ContestResultVO;
+
+import java.util.List;
 
 
 /**
@@ -19,9 +20,9 @@ import com.zhou.zoj.model.vo.ContestResultVO;
  */
 public interface ContestResultService extends IService<ContestResult> {
     /**
-     * 题目提交
+     * 比赛结果
      *
-     * @param contestResultAddRequest 题目提交信息
+     * @param contestResultAddRequest 比赛结果信息
      * @param loginUser
      * @return
      */
@@ -37,7 +38,7 @@ public interface ContestResultService extends IService<ContestResult> {
     QueryWrapper<ContestResult> getQueryWrapper(ContestResultQueryRequest contestResultQueryRequest);
 
     /**
-     * 获取题目封装
+     * 获取比赛结果封装
      *
      * @param contestResult
      * @param loginUser
@@ -46,7 +47,7 @@ public interface ContestResultService extends IService<ContestResult> {
     ContestResultVO getContestResultVO(ContestResult contestResult, User loginUser);
 
     /**
-     * 分页获取题目封装
+     * 分页获取比赛结果封装
      *
      * @param contestResultPage
      * @param loginUser
@@ -62,4 +63,9 @@ public interface ContestResultService extends IService<ContestResult> {
      * @return
      */
     Boolean isUserSubmitted(long contestId, long userId) ;
+
+    Boolean contestResultSubmit(Long id, Long contestId);
+
+    List<ContestResultVO> listAllContestResultVO(long contestId);
+
 }

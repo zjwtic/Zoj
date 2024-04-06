@@ -3,6 +3,9 @@
     <template v-if="route.path.startsWith('/user/')">
       <router-view />
     </template>
+    <template v-else-if="route.path.startsWith('/online/')">
+      <router-view />
+    </template>
     <template v-else>
       <BasicLayout />
     </template>
@@ -17,6 +20,7 @@
 import BasicLayout from "@/layouts/BasicLayout";
 import { useRoute } from "vue-router";
 import { onMounted } from "vue";
+import DoContestLayout from "@/layouts/DoContestLayout.vue";
 
 const route = useRoute();
 

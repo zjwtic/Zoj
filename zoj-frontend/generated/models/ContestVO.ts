@@ -12,7 +12,8 @@ export type ContestVO = {
     duration?: number;
     endTime?: string;
     id?: number;
-    selectContestIds?: Array<string>;
+    isParticipated?: boolean;
+    selectQuestionIds?: Array<string>;
     startTime?: string;
     updateTime?: string;
     userId?: number;

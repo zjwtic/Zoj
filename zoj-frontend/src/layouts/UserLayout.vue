@@ -1,5 +1,5 @@
 <template>
-  <div id="userLayout">
+  <div id="DoContestLayout">
     <div id="adminbox">
       <a-layout-content class="content">
         <router-view />
@@ -8,7 +8,7 @@
   </div>
 </template>
 <style scoped>
-#userLayout {
+#DoContestLayout {
   padding-top: 30vh;
   height: 100vh;
   text-align: center;
@@ -18,12 +18,12 @@
   background-size: cover;
 }
 
-#userLayout .logo {
+#DoContestLayout .logo {
   width: 64px;
   height: 64px;
 }
 
-#userLayout #adminbox {
+#DoContestLayout #adminbox {
   background-color: rgba(255, 255, 255, 0.6);
   border-radius: 13px;
   text-align: center;
@@ -33,11 +33,11 @@
   height: 430px;
 }
 
-#userLayout .header {
+#DoContestLayout .header {
   margin-top: 16px;
 }
 
-#userLayout .content {
+#DoContestLayout .content {
   margin-bottom: 16px;
   padding-top: 40px;
   padding-bottom: 70px;
@@ -45,7 +45,7 @@
   padding-right: 40px;
 }
 
-#userLayout .footer {
+#DoContestLayout .footer {
   padding: 16px;
   position: sticky;
   bottom: 0;

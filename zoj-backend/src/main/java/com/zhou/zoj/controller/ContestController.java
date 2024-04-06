@@ -165,11 +165,11 @@ public class ContestController {
         if (contest == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
-        // 仅本人或管理员可查看自己
-        User loginUser = userService.getLoginUser(request);
-        if (!contest.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
-            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
-        }
+//        // 仅本人或管理员可查看自己
+//        User loginUser = userService.getLoginUser(request);
+//        if (!contest.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
+//            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+//        }
         return ResultUtils.success(contest);
     }
 
