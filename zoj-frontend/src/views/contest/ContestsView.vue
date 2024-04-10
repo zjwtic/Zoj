@@ -53,7 +53,7 @@
       <template #optional="{ record }">
         <a-space>
           <a-button
-            v-if="!record.isParticipated"
+            v-if="!record.isParticipated && isBegin(record) && !isEnd(record)"
             shape="round"
             status="normal"
             type="primary"
@@ -61,7 +61,15 @@
             >比赛
           </a-button>
           <a-button
-            v-if="record.isParticipated"
+            v-if="!isBegin(record)"
+            shape="round"
+            status="normal"
+            type="primary"
+            disabled
+            >比赛
+          </a-button>
+          <a-button
+            v-if="record.isParticipated || isEnd(record)"
             shape="round"
             status="normal"
             type="primary"
@@ -80,6 +88,7 @@ import {
   Contest,
   ContestControllerService,
   ContestQueryRequest,
+  Question,
 } from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
 import { useRouter } from "vue-router";
@@ -209,11 +218,21 @@ const router = useRouter();
 
 /**
  * 跳转到比赛页面
- * @param question
+ * @param contest
  */
 const toContestPage = (contest: Contest) => {
   router.push({
     path: `/online/contest/${contest.id}`,
+  });
+};
+
+/**
+ * 跳转到题目结果页面
+ * @param contest
+ */
+const toContestResult = (contest: Contest) => {
+  router.push({
+    path: `contestresult/${contest.id}`,
   });
 };
 
@@ -226,6 +245,33 @@ const doSubmit = () => {
     ...searchParams.value,
     current: 1,
   };
+};
+
+const isBegin = (record: any) => {
+  // 给定的字符串时间
+  const startTimeString = record.startTime;
+
+  // 解析字符串时间为Date对象
+  const startTime = new Date(startTimeString);
+
+  // 获取当前时间的Date对象
+  const currentTime = new Date();
+
+  // 比较时间
+  return currentTime > startTime;
+};
+const isEnd = (record: any) => {
+  // 给定的字符串时间
+  const endTimeString = record.endTime;
+
+  // 解析字符串时间为Date对象
+  const endTime = new Date(endTimeString);
+
+  // 获取当前时间的Date对象
+  const currentTime = new Date();
+
+  // 比较时间
+  return currentTime >= endTime;
 };
 </script>
 

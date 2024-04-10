@@ -324,6 +324,7 @@ const handleCancel = () => {
   visible.value = false;
 };
 
+const router = useRouter();
 /**
  * 交卷
  */
@@ -337,6 +338,9 @@ const submitContest = async () => {
   if (res.code === 0) {
     //todo 跳转到
     message.success("交卷成功");
+    await router.push({
+      path: `../../contestresult/${props.id}`,
+    });
   } else {
     message.error("提交失败," + res.message);
   }

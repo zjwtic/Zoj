@@ -5,21 +5,26 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhou.zoj.common.BaseResponse;
 import com.zhou.zoj.common.ErrorCode;
 import com.zhou.zoj.common.ResultUtils;
+import com.zhou.zoj.exception.BusinessException;
 import com.zhou.zoj.exception.ThrowUtils;
+import com.zhou.zoj.mapper.ContestMapper;
 import com.zhou.zoj.mapper.CountDownMapper;
 import com.zhou.zoj.model.dto.countdown.CountDownBeginRequest;
 import com.zhou.zoj.model.dto.countdown.CountDownGetRestTimeRequest;
+import com.zhou.zoj.model.entity.Contest;
 import com.zhou.zoj.model.entity.CountDown;
 import com.zhou.zoj.model.entity.User;
 
 import com.zhou.zoj.service.ContestResultService;
 import com.zhou.zoj.service.CountDownService;
 import com.zhou.zoj.service.UserService;
+import com.zhou.zoj.utils.ScheduledTaskManager;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
+import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -41,9 +46,25 @@ public class CountDownServiceImpl extends ServiceImpl<CountDownMapper, CountDown
     @Resource
     ContestResultService contestResultService;
 
+    @Resource
+    private ContestMapper contestMapper;
+
+
 
     @Override
     public BaseResponse<Long> startCountdown(CountDownBeginRequest countDownBeginRequest, HttpServletRequest request) {
+
+        // 判断实体是否存在，根据类别获取实体
+        Contest contest = contestMapper.selectById(countDownBeginRequest.getContestId());
+        if (contest == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        // 获取当前日期
+        Date date = new Date();
+        // 比较时间是否满足
+        if (date.before(contest.getStartTime()) || date.after(contest.getEndTime())) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_ERROR);
+        }
 
 
         // 获取当前时间戳并存储到数据库
@@ -57,7 +78,7 @@ public class CountDownServiceImpl extends ServiceImpl<CountDownMapper, CountDown
         countDown.setEndTimeStamp(future.toEpochMilli());
         boolean result = save(countDown);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
-        long newPostId = countDown.getId();
+        long newCownDownId = countDown.getId();
 
 
 //        开启定时器
@@ -77,7 +98,7 @@ public class CountDownServiceImpl extends ServiceImpl<CountDownMapper, CountDown
         };
         // 设置定时任务，每隔一段时间检查一次倒计时是否结束
         scheduler.scheduleAtFixedRate(checkCountdown, 1, 1, TimeUnit.SECONDS);
-        return ResultUtils.success(newPostId);
+        return ResultUtils.success(newCownDownId);
     }
 
 

@@ -6,7 +6,7 @@ import type { BaseResponse_boolean_ } from '../models/BaseResponse_boolean_';
 import type { BaseResponse_ContestResult_ } from '../models/BaseResponse_ContestResult_';
 import type { BaseResponse_ContestResultVO_ } from '../models/BaseResponse_ContestResultVO_';
 import type { BaseResponse_List_ContestQuestionAccepted_ } from '../models/BaseResponse_List_ContestQuestionAccepted_';
-import type { BaseResponse_List_ContestResultVO_ } from '../models/BaseResponse_List_ContestResultVO_';
+import type { BaseResponse_List_ContestResultPointVO_ } from '../models/BaseResponse_List_ContestResultPointVO_';
 import type { BaseResponse_long_ } from '../models/BaseResponse_long_';
 import type { BaseResponse_Page_ContestResultVO_ } from '../models/BaseResponse_Page_ContestResultVO_';
 import type { BaseResponse_UpdateContestResultVO_ } from '../models/BaseResponse_UpdateContestResultVO_';
@@ -137,15 +137,15 @@ id?: number,
     }
 
     /**
-     * listAllContestResultVO
+     * listAllContestResultPointVO
      * @param contestId contestId
-     * @returns BaseResponse_List_ContestResultVO_ OK
+     * @returns BaseResponse_List_ContestResultPointVO_ OK
      * @returns any Created
      * @throws ApiError
      */
-    public static listAllContestResultVoUsingPost(
+    public static listAllContestResultPointVoUsingPost(
 contestId?: number,
-): CancelablePromise<BaseResponse_List_ContestResultVO_ | any> {
+): CancelablePromise<BaseResponse_List_ContestResultPointVO_ | any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/contest_result/list/all/vo',

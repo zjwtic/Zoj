@@ -11,6 +11,7 @@ import type { BaseResponse_Page_QuestionSubmitVO_ } from '../models/BaseResponse
 import type { BaseResponse_Page_QuestionVO_ } from '../models/BaseResponse_Page_QuestionVO_';
 import type { BaseResponse_Question_ } from '../models/BaseResponse_Question_';
 import type { BaseResponse_QuestionVO_ } from '../models/BaseResponse_QuestionVO_';
+import type { BaseResponse_SelectQuestionVO_ } from '../models/BaseResponse_SelectQuestionVO_';
 import type { DeleteRequest } from '../models/DeleteRequest';
 import type { QuestionAddRequest } from '../models/QuestionAddRequest';
 import type { QuestionEditRequest } from '../models/QuestionEditRequest';
@@ -279,6 +280,24 @@ questionSubmitQueryRequest: QuestionSubmitQueryRequest,
             method: 'POST',
             url: '/api/question/question_submit/list/page',
             body: questionSubmitQueryRequest,
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+
+    /**
+     * getOneRandomQuestion
+     * @returns BaseResponse_SelectQuestionVO_ OK
+     * @returns any Created
+     * @throws ApiError
+     */
+    public static getOneRandomQuestionUsingPost(): CancelablePromise<BaseResponse_SelectQuestionVO_ | any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/question/random/',
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,

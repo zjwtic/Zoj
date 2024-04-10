@@ -23,12 +23,15 @@ import com.zhou.zoj.model.vo.ContestVO;
 import com.zhou.zoj.service.ContestService;
 import com.zhou.zoj.service.UserService;
 
+import com.zhou.zoj.utils.ScheduledTaskManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -58,23 +61,12 @@ public class ContestController {
      */
     @PostMapping("/add")
     public BaseResponse<Long> addContest(@RequestBody ContestAddRequest contestAddRequest, HttpServletRequest request) {
+
         if (contestAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        Contest contest = new Contest();
-        BeanUtils.copyProperties(contestAddRequest, contest);
-
-
-        List<String> selectQuestionIds = contestAddRequest.getSelectQuestionIds();
-        if (selectQuestionIds != null) {
-            contest.setSelectQuestionIds(GSON.toJson(selectQuestionIds));
-        }
-        contestService.validContest(contest, true);
         User loginUser = userService.getLoginUser(request);
-        contest.setUserId(loginUser.getId());
-        boolean result = contestService.save(contest);
-        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
-        long newContestId = contest.getId();
+        Long newContestId = contestService.addContest(contestAddRequest, loginUser);
         return ResultUtils.success(newContestId);
 
     }
@@ -92,15 +84,8 @@ public class ContestController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         User user = userService.getLoginUser(request);
-        long id = deleteRequest.getId();
-        // 判断是否存在
-        Contest oldContest = contestService.getById(id);
-        ThrowUtils.throwIf(oldContest == null, ErrorCode.NOT_FOUND_ERROR);
-        // 仅本人或管理员可删除
-        if (!oldContest.getUserId().equals(user.getId()) && !userService.isAdmin(request)) {
-            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
-        }
-        boolean b = contestService.removeById(id);
+
+        boolean b= contestService.deleteContest(deleteRequest, user,request);
         return ResultUtils.success(b);
     }
 
@@ -134,19 +119,7 @@ public class ContestController {
         if (contestUpdateRequest == null || contestUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        Contest contest = new Contest();
-        BeanUtils.copyProperties(contestUpdateRequest, contest);
-        List<String> selectQuestionIds = contestUpdateRequest.getSelectQuestionIds();
-        if (selectQuestionIds != null) {
-            contest.setSelectQuestionIds(GSON.toJson(selectQuestionIds));
-        }
-        // 参数校验
-        contestService.validContest(contest, false);
-        long id = contestUpdateRequest.getId();
-        // 判断是否存在
-        Contest oldContest = contestService.getById(id);
-        ThrowUtils.throwIf(oldContest == null, ErrorCode.NOT_FOUND_ERROR);
-        boolean result = contestService.updateById(contest);
+        boolean result=contestService.updateContest(contestUpdateRequest);
         return ResultUtils.success(result);
     }
 

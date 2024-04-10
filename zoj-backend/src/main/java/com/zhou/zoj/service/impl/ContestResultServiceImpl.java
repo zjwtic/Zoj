@@ -17,7 +17,10 @@ import com.zhou.zoj.model.dto.contestresult.ContestResultQueryRequest;
 import com.zhou.zoj.model.entity.*;
 import com.zhou.zoj.model.enums.ContestResultStatusEnum;
 
+import com.zhou.zoj.model.vo.ContestResultPointVO;
 import com.zhou.zoj.model.vo.ContestResultVO;
+import com.zhou.zoj.model.vo.QuestionVO;
+import com.zhou.zoj.model.vo.UserVO;
 import com.zhou.zoj.service.ContestResultService;
 import com.zhou.zoj.service.ContestService;
 import com.zhou.zoj.service.QuestionService;
@@ -28,6 +31,8 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import java.util.stream.Collectors;
@@ -46,13 +51,11 @@ public class ContestResultServiceImpl extends ServiceImpl<ContestResultMapper, C
     @Resource
     private UserService userService;
 
-    //    @Resource
-//    private ContestService contestService;
     @Resource
     private ContestMapper contestMapper;
 
     /**
-     * 提交题目
+     * 新增比赛结果
      *
      * @param contestResultAddRequest
      * @param loginUser
@@ -67,6 +70,14 @@ public class ContestResultServiceImpl extends ServiceImpl<ContestResultMapper, C
         if (contest == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
+        // 获取当前时间
+        Date now = new Date();
+        // 比较时间是否满足
+        if (now.before(contest.getStartTime()) || now.after(contest.getEndTime())) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_ERROR);
+        }
+
+
         // 是否已提交题目
         long userId = loginUser.getId();
         // 每个用户串行提交题目
@@ -188,11 +199,29 @@ public class ContestResultServiceImpl extends ServiceImpl<ContestResultMapper, C
         queryWrapper.eq("isDelete", false);
         queryWrapper.eq("contestId", contestId);
         List<ContestResult> contestResultList = list(queryWrapper);
-        List<ContestResultVO> selectQuestionVOList = contestResultList.stream()
-                .map(contestResult -> ContestResultVO.objToVo(contestResult))
+        List<ContestResultVO> ContestResultVOList = contestResultList.stream()
+                .map(contestResult -> {
+                    ContestResultVO contestResultVO = ContestResultVO.objToVo(contestResult);
+                    User user = userService.getById(contestResult.getUserId());
+                    contestResultVO.setUserVO(userService.getUserVO(user));
+                    return contestResultVO;
+                })
                 .collect(Collectors.toList());
-        return selectQuestionVOList;
+
+        return ContestResultVOList;
     }
+
+    @Override
+    public List<ContestResultPointVO> listAllContestResultPointVO(long contestId) {
+        List<ContestResultVO> contestResultVOList = listAllContestResultVO(contestId);
+        List<ContestResultPointVO> contestResultPointVOList = contestResultVOList.stream()
+                .map(contestResultVO -> ContestResultPointVO.getContestResultPointVO(contestResultVO))
+                .collect(Collectors.toList());
+        contestResultPointVOList.sort((o1, o2) -> o2.getPoint() - o1.getPoint());
+        return contestResultPointVOList;
+
+    }
+
 }
 
 

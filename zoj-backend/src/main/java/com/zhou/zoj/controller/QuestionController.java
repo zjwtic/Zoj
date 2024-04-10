@@ -33,6 +33,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -328,6 +329,23 @@ public class QuestionController {
         return ResultUtils.success(questionVOS);
     }
 
+
+    /**
+     * 随机获取一题
+     *
+     * @return
+     */
+    @PostMapping("/random/")
+    public BaseResponse<SelectQuestionVO> getOneRandomQuestion() {
+        QueryWrapper<Question> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("isDelete", false);
+        List<Question> questionList = questionService.list(queryWrapper);
+        Random random = new Random();
+        int randomIndex = random.nextInt(questionList.size()); // 生成随机索引
+        Question random_question = questionList.get(randomIndex);
+        SelectQuestionVO selectQuestionVO = new SelectQuestionVO(random_question.getId(), random_question.getTitle(), JSONUtil.toList(random_question.getTags(), String.class));
+        return ResultUtils.success(selectQuestionVO);
+    }
 
     /**
      * 提交题目

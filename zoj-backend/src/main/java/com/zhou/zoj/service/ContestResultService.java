@@ -7,6 +7,7 @@ import com.zhou.zoj.model.dto.contestresult.ContestResultAddRequest;
 import com.zhou.zoj.model.dto.contestresult.ContestResultQueryRequest;
 import com.zhou.zoj.model.entity.ContestResult;
 import com.zhou.zoj.model.entity.User;
+import com.zhou.zoj.model.vo.ContestResultPointVO;
 import com.zhou.zoj.model.vo.ContestResultVO;
 
 import java.util.List;
@@ -68,4 +69,5 @@ public interface ContestResultService extends IService<ContestResult> {
 
     List<ContestResultVO> listAllContestResultVO(long contestId);
 
+    List<ContestResultPointVO> listAllContestResultPointVO(long contestId);
 }

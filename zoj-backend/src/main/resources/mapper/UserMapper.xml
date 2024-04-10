@@ -5,6 +5,7 @@
 <mapper namespace="com.zhou.zoj.mapper.UserMapper">
     <resultMap id="BaseResultMap" type="com.zhou.zoj.model.entity.User">
         <id property="id" column="id" jdbcType="BIGINT"/>
+        <id property="points" column="points" jdbcType="INTEGER"/>
         <result property="unionId" column="unionId" jdbcType="VARCHAR"/>
         <result property="mpOpenId" column="mpOpenId" jdbcType="VARCHAR"/>
         <result property="userName" column="userName" jdbcType="VARCHAR"/>
@@ -16,8 +17,11 @@
         <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
     </resultMap>
 
+
     <sql id="Base_Column_List">
-        id,unionId,mpOpenId,
+        id
+        ,points,
+        ,unionId,mpOpenId,
         userName,userAvatar,userProfile,
         userRole,createTime,updateTime,isDelete
     </sql>

@@ -282,22 +282,22 @@ public class ContestResultController {
     }
 
     /**
-     * 获取所有比赛信息
+     * 获取所有比赛成绩信息
      *
      * @param contestId
      * @return
      */
     @PostMapping("/list/all/vo")
-    public BaseResponse<List<ContestResultVO>> listAllContestResultVO(long contestId) {
+    public BaseResponse<List<ContestResultPointVO>> listAllContestResultPointVO(long contestId) {
         if (contestId <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        List<ContestResultVO> contestResultVOList = contestResultService.listAllContestResultVO(contestId);
+        List<ContestResultPointVO> contestResultVOList = contestResultService.listAllContestResultPointVO(contestId);
         return ResultUtils.success(contestResultVOList);
     }
 
     /**
-     * 获取所有比赛信息
+     * 获取所有比赛题目通过信息
      *
      * @param contestId
      * @return

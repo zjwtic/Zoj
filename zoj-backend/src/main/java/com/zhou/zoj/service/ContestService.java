@@ -3,9 +3,13 @@ package com.zhou.zoj.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhou.zoj.common.DeleteRequest;
+import com.zhou.zoj.model.dto.contest.ContestAddRequest;
 import com.zhou.zoj.model.dto.contest.ContestQueryRequest;
+import com.zhou.zoj.model.dto.contest.ContestUpdateRequest;
 import com.zhou.zoj.model.entity.Contest;
 import com.zhou.zoj.model.entity.Contest;
+import com.zhou.zoj.model.entity.User;
 import com.zhou.zoj.model.vo.ContestVO;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,4 +56,9 @@ public interface ContestService extends IService<Contest> {
      */
     Page<ContestVO> getContestVOPage(Page<Contest> contestPage, HttpServletRequest request);
 
+    Long addContest(ContestAddRequest contestAddRequest, User loginUser);
+
+    boolean deleteContest(DeleteRequest deleteRequest, User user, HttpServletRequest request);
+
+    boolean updateContest(ContestUpdateRequest contestUpdateRequest);
 }

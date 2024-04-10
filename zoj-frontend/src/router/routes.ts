@@ -26,6 +26,7 @@ import AddDiscussionView from "@/views/discuss/AddDiscussionView.vue";
 import AddContestView from "@/views/contest/AddContestView.vue";
 import ContestsView from "@/views/contest/ContestsView.vue";
 import DoContestView from "@/views/contest/DoContestView.vue";
+import ContestResultView from "@/views/contest/ContestResultView.vue";
 import ManageContestView from "@/views/contest/ManageContestView.vue";
 import ManageDiscussionView from "@/views/discuss/ManageDiscussionView.vue";
 import RanksView from "@/views/rank/RanksView.vue";
@@ -106,6 +107,15 @@ export const routes: Array<RouteRecordRaw> = [
     component: AddContestView,
     meta: {
       access: ACCESS_ENUM.USER,
+      hideInMenu: true,
+    },
+  },
+  {
+    path: "/contestresult/:id",
+    name: "查看比赛结果",
+    component: ContestResultView,
+    props: true,
+    meta: {
       hideInMenu: true,
     },
   },
@@ -267,11 +277,11 @@ export const routes: Array<RouteRecordRaw> = [
     name: "浏览题目",
     component: QuestionsView,
   },
-  // {
-  //   path: "/ranks",
-  //   name: "排行榜",
-  //   component: RanksView,
-  // },
+  {
+    path: "/ranks",
+    name: "排行榜",
+    component: RanksView,
+  },
   // {
   //   path: "/question_submit",
   //   name: "浏览题目提交",

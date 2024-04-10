@@ -1,5 +1,6 @@
 package com.zhou.zoj.controller;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhou.zoj.annotation.AuthCheck;
 import com.zhou.zoj.common.BaseResponse;
@@ -24,6 +25,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import com.zhou.zoj.service.impl.UserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -303,4 +305,17 @@ public class UserController {
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(true);
     }
+
+//
+//    @PostMapping("/test")
+//    public void test() {
+//        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+//        updateWrapper.eq("id", 1726171952544542722l).setSql("points = points + 30");
+//
+//
+//
+////        User byId = userService.getById(1726171952544542722l);
+//        userService.update(null, updateWrapper);
+//    }
+
 }
