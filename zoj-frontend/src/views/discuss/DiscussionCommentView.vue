@@ -339,21 +339,25 @@ const respondMsg = (
 const sendMsg = async () => {
   if (textarea.value) {
     sendTip.value = "咻~~";
-    await CommentControllerService.addCommentUsingPost({
+    const res = await CommentControllerService.addCommentUsingPost({
       ...addParams.value,
       content: textarea.value,
     });
-    addParams.value.rootId = -1;
-    addParams.value.toCommentId = -1;
-    addParams.value.toCommentUserId = -1;
-    textarea.value = "";
+    if (res.code === 0) {
+      addParams.value.rootId = -1;
+      addParams.value.toCommentId = -1;
+      addParams.value.toCommentUserId = -1;
+      textarea.value = "";
 
-    routeChange();
-    removeRespond();
-    var timer02 = setTimeout(function () {
-      sendTip.value = "发送~";
-      clearTimeout(timer02);
-    }, 1000);
+      routeChange();
+      removeRespond();
+      var timer02 = setTimeout(function () {
+        sendTip.value = "发送~";
+        clearTimeout(timer02);
+      }, 1000);
+    } else {
+      message.error("评论失败,请先登录");
+    }
   } else {
     sendTip.value = "内容不能为空~";
     const timer = setTimeout(() => {

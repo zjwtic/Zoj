@@ -60,10 +60,14 @@ public class CommentController {
             throw new RuntimeException(AppHttpCodeEnum.CONTENT_NOT_NULL.getMsg());
         }
 
-        User user = userService.getLoginUser(request);
+//        User user = userService.getLoginUser(request);
+        User user = userService.getLoginUserPermitNull(request);
+        if (user == null) {
+            throw new RuntimeException(AppHttpCodeEnum.NEED_LOGIN.getMsg());
+        }
         comment.setCreateBy(user.getId());
         comment.setUpdateBy(user.getId());
-        Date nowdate=new Date();
+        Date nowdate = new Date();
         comment.setCreateTime(nowdate);
         comment.setUpdateTime(nowdate);
         //解决了四个字段没有值的情况，就可以直接调用mybatisplus提供的save方法往数据库插入数据(用户发送的评论的各个字段)了
@@ -83,7 +87,7 @@ public class CommentController {
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<CommentVO>> listCommentVOByPage(@RequestBody CommentQueryRequest commentQueryRequest,
-                                                       HttpServletRequest request) {
+                                                             HttpServletRequest request) {
         long current = commentQueryRequest.getCurrent();
         long size = commentQueryRequest.getPageSize();
         // 限制爬虫
@@ -92,8 +96,6 @@ public class CommentController {
                 commentService.getQueryWrapper(commentQueryRequest));
         return ResultUtils.success(commentService.getCommentVOPage(postPage, request));
     }
-
-
 
 
 }
