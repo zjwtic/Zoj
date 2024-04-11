@@ -7,7 +7,8 @@ import java.util.*;
 
 public class ScheduledTaskManager {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private final Map<Long, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
+    private final static Map<Long, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
+//    private final Map<Long, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
 
 //    public void scheduleTask(Long contestId, LocalDateTime targetTime, Runnable task) {
 //        // 取消之前的任务（如果存在）

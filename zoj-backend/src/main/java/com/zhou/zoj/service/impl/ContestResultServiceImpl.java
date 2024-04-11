@@ -11,6 +11,7 @@ import com.zhou.zoj.constant.CommonConstant;
 import com.zhou.zoj.exception.BusinessException;
 import com.zhou.zoj.mapper.ContestMapper;
 import com.zhou.zoj.mapper.ContestResultMapper;
+import com.zhou.zoj.mapper.CountDownMapper;
 import com.zhou.zoj.model.dto.contestresult.ContestQuestionData;
 import com.zhou.zoj.model.dto.contestresult.ContestResultAddRequest;
 import com.zhou.zoj.model.dto.contestresult.ContestResultQueryRequest;
@@ -21,10 +22,8 @@ import com.zhou.zoj.model.vo.ContestResultPointVO;
 import com.zhou.zoj.model.vo.ContestResultVO;
 import com.zhou.zoj.model.vo.QuestionVO;
 import com.zhou.zoj.model.vo.UserVO;
-import com.zhou.zoj.service.ContestResultService;
-import com.zhou.zoj.service.ContestService;
-import com.zhou.zoj.service.QuestionService;
-import com.zhou.zoj.service.UserService;
+import com.zhou.zoj.service.*;
+import com.zhou.zoj.utils.ScheduledTaskManager;
 import com.zhou.zoj.utils.SqlUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -53,6 +52,11 @@ public class ContestResultServiceImpl extends ServiceImpl<ContestResultMapper, C
 
     @Resource
     private ContestMapper contestMapper;
+
+    @Resource
+    private CountDownMapper countDownMapper;
+
+    private final static ScheduledTaskManager manager = new ScheduledTaskManager();
 
     /**
      * 新增比赛结果
@@ -189,6 +193,9 @@ public class ContestResultServiceImpl extends ServiceImpl<ContestResultMapper, C
         if (contestResult != null) {
             contestResult.setSubmitStatus(ContestResultStatusEnum.SUBMITTED.getValue());
             result = updateById(contestResult);
+            if (result) {
+                cancelCountDown(userId, contestId);
+            }
         }
         return result;
     }
@@ -220,6 +227,16 @@ public class ContestResultServiceImpl extends ServiceImpl<ContestResultMapper, C
         contestResultPointVOList.sort((o1, o2) -> o2.getPoint() - o1.getPoint());
         return contestResultPointVOList;
 
+    }
+
+    private void cancelCountDown(Long userId, Long contestId) {
+        QueryWrapper<CountDown> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("contestId", contestId);
+        queryWrapper.eq("userId", userId);
+        CountDown countDown = countDownMapper.selectOne(queryWrapper);
+        Long cancelId=countDown.getId();
+        System.out.println("定时器"+cancelId+"被取消了");
+        manager.cancelTask(cancelId);
     }
 
 }

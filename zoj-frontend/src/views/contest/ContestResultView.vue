@@ -199,7 +199,7 @@ const getQuestionIndex = (column: any) => {
 };
 
 const getQuestionColumns = (questionScoreList: any) => {
-  const newArray = questionScoreList.map((item: any) => {
+  const newArray = questionScoreList?.map((item: any) => {
     // 提取title属性
     const { title } = item;
     // 设置固定的slotName属性
