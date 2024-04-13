@@ -39,9 +39,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 用户接口
- *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 @RestController
 @RequestMapping("/user")
@@ -50,7 +47,9 @@ public class UserController {
     /**
      * 盐值，混淆密码
      */
-    private static final String SALT = "yupi";
+//    private static final String SALT = "yupi";
+    // todo  注意现在数据 的密码都是基于yupi 的   我这里更改后没有进行删数据  到时候更新密码会错误
+    private static final String SALT = "zoj";
 
     @Resource
     private UserService userService;
