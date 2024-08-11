@@ -65,7 +65,7 @@ const visibleRoutes = computed(() => {
 //默认主页
 const selectedKeys = ref(["/"]);
 
-//路由跳转后，更新选中的菜单项
+// //路由跳转后，更新选中的菜单项
 rounter.afterEach((to, from, failure) => {
   selectedKeys.value = [to.path];
 });
@@ -74,7 +74,7 @@ rounter.afterEach((to, from, failure) => {
 
 // setTimeout(() => {
 //   store.dispatch("user/getLoginUser", {
-//     userName: "周俊玮",
+//     userName: "xxx",
 //     userRole: ACCESS_ENUM.DMIN,
 //   });A
 // }, 3000);

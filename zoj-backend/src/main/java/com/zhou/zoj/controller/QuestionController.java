@@ -15,7 +15,6 @@ import com.zhou.zoj.exception.ThrowUtils;
 import com.zhou.zoj.model.dto.question.*;
 import com.zhou.zoj.model.dto.questionsubmit.QuestionSubmitAddRequest;
 import com.zhou.zoj.model.dto.questionsubmit.QuestionSubmitQueryRequest;
-import com.zhou.zoj.model.dto.user.UserQueryRequest;
 import com.zhou.zoj.model.entity.Question;
 import com.zhou.zoj.model.entity.QuestionSubmit;
 import com.zhou.zoj.model.entity.User;
@@ -31,7 +30,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -259,7 +257,6 @@ public class QuestionController {
         return ResultUtils.success(questionService.getQuestionVOPage(questionPage, request));
     }
 
-    // endregion
 
 
     /**

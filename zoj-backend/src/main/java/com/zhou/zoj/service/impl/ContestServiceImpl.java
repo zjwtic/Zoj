@@ -17,9 +17,7 @@ import com.zhou.zoj.model.dto.contest.ContestQueryRequest;
 import com.zhou.zoj.model.dto.contest.ContestUpdateRequest;
 import com.zhou.zoj.model.entity.Contest;
 import com.zhou.zoj.model.entity.Question;
-import com.zhou.zoj.model.entity.QuestionSubmit;
 import com.zhou.zoj.model.entity.User;
-import com.zhou.zoj.model.enums.QuestionSubmitStatusEnum;
 import com.zhou.zoj.model.vo.ContestResultPointVO;
 import com.zhou.zoj.model.vo.ContestVO;
 import com.zhou.zoj.model.vo.UserVO;
@@ -37,7 +35,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 

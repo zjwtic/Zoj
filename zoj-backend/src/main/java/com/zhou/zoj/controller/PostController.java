@@ -11,9 +11,7 @@ import com.zhou.zoj.constant.UserConstant;
 import com.zhou.zoj.exception.BusinessException;
 import com.zhou.zoj.exception.ThrowUtils;
 import com.zhou.zoj.model.dto.post.*;
-import com.zhou.zoj.model.dto.postthumb.PostThumbAddRequest;
 import com.zhou.zoj.model.entity.Post;
-import com.zhou.zoj.model.entity.Question;
 import com.zhou.zoj.model.entity.User;
 import com.zhou.zoj.model.vo.PostVO;
 import com.zhou.zoj.service.PostService;
@@ -216,7 +214,6 @@ public class PostController {
         return ResultUtils.success(postService.getPostVOPage(postPage, request));
     }
 
-    // endregion
 
     /**
      * 分页搜索（从 ES 查询，封装类）

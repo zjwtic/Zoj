@@ -1,11 +1,15 @@
 package com.zhou.zoj.model.vo;
+
 import cn.hutool.json.JSONUtil;
 import com.zhou.zoj.judge.codesandbox.model.JudgeInfo;
 import com.zhou.zoj.model.entity.QuestionSubmit;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 题目提交封装类
@@ -60,12 +64,12 @@ public class QuestionSubmitVO implements Serializable {
     private Date updateTime;
 
     /**
-     *  对应用户信息
+     * 对应用户信息
      */
     private UserVO userVO;
 
     /**
-     *  对应题目信息
+     * 对应题目信息
      */
     private QuestionVO questionVO;
 
@@ -85,7 +89,7 @@ public class QuestionSubmitVO implements Serializable {
         }
         QuestionSubmit questionSubmit = new QuestionSubmit();
         BeanUtils.copyProperties(questionSubmitVO, questionSubmit);
-       JudgeInfo judgeInfo = questionSubmitVO.getJudgeInfo();
+        JudgeInfo judgeInfo = questionSubmitVO.getJudgeInfo();
         if (judgeInfo != null) {
             questionSubmit.setJudgeInfo(JSONUtil.toJsonStr(judgeInfo));
         }
@@ -105,7 +109,7 @@ public class QuestionSubmitVO implements Serializable {
         }
         QuestionSubmitVO questionSubmitVO = new QuestionSubmitVO();
         BeanUtils.copyProperties(questionSubmit, questionSubmitVO);
-       JudgeInfo judgeInfo = JSONUtil.toBean(questionSubmit.getJudgeInfo(), JudgeInfo.class);
+        JudgeInfo judgeInfo = JSONUtil.toBean(questionSubmit.getJudgeInfo(), JudgeInfo.class);
         questionSubmitVO.setJudgeInfo(judgeInfo);
         return questionSubmitVO;
     }

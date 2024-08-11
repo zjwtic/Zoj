@@ -1,16 +1,11 @@
 import { RouteRecordRaw } from "vue-router";
-import ExampleView from "@/views/ExampleView.vue";
 import HomeView from "@/views/HomeView.vue";
-import AdminView from "@/views/AdminView.vue";
-import NoAuthView from "@/views/NoAuthView.vue";
 import UserLayout from "@/layouts/UserLayout.vue";
 import DoContestLayout from "@/layouts/DoContestLayout.vue";
 import UserLoginView from "@/views/user/UserLoginView.vue";
 import UserRegisterView from "@/views/user/UserRegisterView.vue";
-import UserAvatarView from "@/views/usermessage/UserAvatarView.vue";
 import UserMessageView from "@/views/usermessage/UserMessageView.vue";
 import AddQuestionView from "@/views/question/AddQuestionView.vue";
-import QuestionTopicView from "@/views/question/QuestionTopicView.vue";
 import QuestionsView from "@/views/question/QuestionsView.vue";
 import QuestionSubmitView from "@/views/question/QuestionSubmitView.vue";
 import QuestionSubmitByOwnView from "@/views/questionSubmit/QuestionSubmitByOwnView.vue";
@@ -131,18 +126,6 @@ export const routes: Array<RouteRecordRaw> = [
       hideInMenu: true,
     },
   },
-
-  // {
-  //   path: "/do/contest/:id",
-  //   name: "在线比赛",
-  //   component: DoContestView,
-  //   props: true,
-  //   meta: {
-  //     access: ACCESS_ENUM.USER,
-  //     hideInMenu: true,
-  //   },
-  // },
-  // },
   {
     path: "/manage/discussion",
     name: "管理讨论",
@@ -193,23 +176,6 @@ export const routes: Array<RouteRecordRaw> = [
       hideInMenu: true,
     },
   },
-
-  // {
-  //   path: "/admin",
-  //   name: " 管理员可见",
-  //   component: AdminView,
-  //   meta: {
-  //     access: ACCESS_ENUM.ADMIN,
-  //   },
-  // },
-  // {
-  //     path: "/hide",
-  //     name: "隐藏页面",
-  //     component: ExampleView,
-  //     meta: {
-  //       hideInMenu: true,
-  //     },
-  //   },
   {
     path: "/update/question",
     name: "更新题目",
@@ -245,12 +211,6 @@ export const routes: Array<RouteRecordRaw> = [
       access: ACCESS_ENUM.ADMIN,
     },
   },
-  // {
-  //   path: "/browse/question",
-  //   name: "浏览题目",
-  //   component: ExampleView,
-  // },
-
   {
     path: "/questions",
     name: "题库",
@@ -275,17 +235,4 @@ export const routes: Array<RouteRecordRaw> = [
       hideInMenu: true,
     },
   },
-  // {
-  //   path: "/usermessage/avatar",
-  //   name: "头像展示",
-  //   component: UserAvatarView,
-  // },
-  // {
-  //   path: "/noAuth",
-  //   name: "无权限",
-  //   component: NoAuthView,
-  //   meta: {
-  //     hideInMenu: true,
-  //   },
-  // },
 ];

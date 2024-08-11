@@ -50,9 +50,6 @@ public class CommentController {
     public BaseResponse<Long> addComment(@RequestBody CommentAddRequest commentAddRequest, HttpServletRequest request) {
         Comment comment = new Comment();
         BeanUtils.copyProperties(commentAddRequest, comment);
-        //注意前端在调用这个发送评论接口时，在请求体是没有向我们传入createTime、createId、updateTime、updateID字段，所以
-        //我们这里往后端插入数据时，就会导致上面那行的四个字段没有值
-        //为了解决这个问题，我们在huanf-framework工程新增了MyMetaObjectHandler类、修改了Comment类。详细可自己定位去看一下代码
 
         //限制用户在发送评论时，评论内容不能为空。如果为空就抛出异常
         if (!StringUtils.hasText(comment.getContent())) {

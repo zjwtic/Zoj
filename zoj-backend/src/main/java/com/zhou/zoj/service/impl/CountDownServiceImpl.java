@@ -83,24 +83,6 @@ public class CountDownServiceImpl extends ServiceImpl<CountDownMapper, CountDown
         long newCownDownId = countDown.getId();
 
 
-////        开启定时器
-//        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-//        Runnable checkCountdown = () -> {
-//            System.out.println("比赛倒计时定时器正在运行 userId:" + loginUser.getId() + " contestId:" + countDownBeginRequest.getContestId());
-//            // 在这里使用endTime变量
-//            //x获取当前时间和数据库中存储的倒计时结束时间
-//            Instant current = Instant.now();
-//            if (current.isAfter(future)) {
-//                // 倒计时结束，执行相应操作
-//                onCountdownFinished(loginUser.getId(), countDownBeginRequest.getContestId());
-//                // 停止定时任务
-//                scheduler.shutdown();
-//            }
-//
-//        };
-//        // 设置定时任务，每隔一段时间检查一次倒计时是否结束
-//        scheduler.scheduleAtFixedRate(checkCountdown, 1, 1, TimeUnit.SECONDS);
-
         // 安排任务
         Runnable checkCountdown = () -> {
             // 倒计时结束，执行相应操作

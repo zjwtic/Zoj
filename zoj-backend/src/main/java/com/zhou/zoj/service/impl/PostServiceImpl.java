@@ -18,7 +18,6 @@ import com.zhou.zoj.model.entity.*;
 import com.zhou.zoj.model.vo.PostVO;
 import com.zhou.zoj.model.vo.UserVO;
 import com.zhou.zoj.service.PostService;
-import com.zhou.zoj.service.PostThumbService;
 import com.zhou.zoj.service.UserService;
 import com.zhou.zoj.utils.SqlUtils;
 
@@ -40,7 +39,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;

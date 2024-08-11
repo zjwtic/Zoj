@@ -7,7 +7,7 @@ export default {
   state: () => ({
     loginUser: {
       userName: "未登录",
-      // userRole: ACCESS_ENUM.NOT_LOGIN,  //这里为什么没有 是区分  登录失败给userRole  未登录就没有userRole
+      // userRole: ACCESS_ENUM.NOT_LOGIN,  //这里为什么没有 是为了区分  登录失败给userRole  未登录就没有userRole
     },
   }),
   actions: {

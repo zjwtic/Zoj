@@ -9,7 +9,6 @@ import com.zhou.zoj.exception.BusinessException;
 import com.zhou.zoj.judge.JudgeService;
 import com.zhou.zoj.judge.codesandbox.model.JudgeInfo;
 import com.zhou.zoj.mapper.QuestionMapper;
-import com.zhou.zoj.model.dto.question.QuestionQueryRequest;
 import com.zhou.zoj.model.dto.questionsubmit.QuestionSubmitAddRequest;
 import com.zhou.zoj.model.dto.questionsubmit.QuestionSubmitQueryRequest;
 import com.zhou.zoj.model.entity.Question;
@@ -19,9 +18,6 @@ import com.zhou.zoj.model.enums.JudgeInfoMessageEnum;
 import com.zhou.zoj.model.enums.QuestionSubmitLanguageEnum;
 import com.zhou.zoj.model.enums.QuestionSubmitStatusEnum;
 import com.zhou.zoj.model.vo.QuestionSubmitVO;
-import com.zhou.zoj.model.vo.QuestionVO;
-import com.zhou.zoj.model.vo.UserVO;
-import com.zhou.zoj.service.QuestionService;
 import com.zhou.zoj.service.QuestionSubmitService;
 import com.zhou.zoj.mapper.QuestionSubmitMapper;
 import com.zhou.zoj.service.UserService;
@@ -29,16 +25,11 @@ import com.zhou.zoj.utils.SqlUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -148,41 +139,6 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
                 questionSubmitVO.setCode(null);
             }
         }
-
-//        long questionSubmitId = questionSubmit.getId();
-//        // 1. 关联查询用户信息
-//        Long userId = questionSubmit.getUserId();
-//        Long questionId=questionSubmit.getQuestionId();
-//        User user = null;
-//        Question question=null;
-//        if (userId != null && userId > 0) {
-//            user = userService.getById(userId);
-//        }
-//
-//        UserVO userVO = userService.getUserVO(user);
-
-//        if (questionId != null && questionId > 0) {
-//            question = questionService.getById(questionId);
-//        }
-//
-//        QuestionVO questionVO= questionService.getQuestionVO(question,request);
-//        questionSubmitVO.setQuestionVO(questionVO);
-//        // 2. 已登录，获取用户点赞、收藏状态
-//        User loginUser = userService.getLoginUserPermitNull(request);
-//        if (loginUser != null) {
-//            // 获取点赞
-//            QueryWrapper<QuestionSubmitThumb> questionSubmitThumbQueryWrapper = new QueryWrapper<>();
-//            questionSubmitThumbQueryWrapper.in("questionSubmitId", questionSubmitId);
-//            questionSubmitThumbQueryWrapper.eq("userId", loginUser.getId());
-//            QuestionSubmitThumb questionSubmitThumb = questionSubmitThumbMapper.selectOne(questionSubmitThumbQueryWrapper);
-//            questionSubmitVO.setHasThumb(questionSubmitThumb != null);
-//            // 获取收藏
-//            QueryWrapper<QuestionSubmitFavour> questionSubmitFavourQueryWrapper = new QueryWrapper<>();
-//            questionSubmitFavourQueryWrapper.in("questionSubmitId", questionSubmitId);
-//            questionSubmitFavourQueryWrapper.eq("userId", loginUser.getId());
-//            QuestionSubmitFavour questionSubmitFavour = questionSubmitFavourMapper.selectOne(questionSubmitFavourQueryWrapper);
-//            questionSubmitVO.setHasFavour(questionSubmitFavour != null);
-//        }
         return questionSubmitVO;
     }
 

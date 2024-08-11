@@ -4,9 +4,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zhou.zoj.common.BaseResponse;
 import com.zhou.zoj.common.ErrorCode;
-import com.zhou.zoj.common.ResultUtils;
 import com.zhou.zoj.constant.CommonConstant;
 import com.zhou.zoj.exception.BusinessException;
 import com.zhou.zoj.mapper.ContestMapper;
@@ -20,8 +18,6 @@ import com.zhou.zoj.model.enums.ContestResultStatusEnum;
 
 import com.zhou.zoj.model.vo.ContestResultPointVO;
 import com.zhou.zoj.model.vo.ContestResultVO;
-import com.zhou.zoj.model.vo.QuestionVO;
-import com.zhou.zoj.model.vo.UserVO;
 import com.zhou.zoj.service.*;
 import com.zhou.zoj.utils.ScheduledTaskManager;
 import com.zhou.zoj.utils.SqlUtils;
@@ -30,7 +26,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 

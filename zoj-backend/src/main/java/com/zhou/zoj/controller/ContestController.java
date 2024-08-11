@@ -14,8 +14,6 @@ import com.zhou.zoj.exception.ThrowUtils;
 import com.zhou.zoj.model.dto.contest.ContestAddRequest;
 import com.zhou.zoj.model.dto.contest.ContestQueryRequest;
 import com.zhou.zoj.model.dto.contest.ContestUpdateRequest;
-import com.zhou.zoj.model.dto.question.JudgeCase;
-import com.zhou.zoj.model.dto.question.JudgeConfig;
 import com.zhou.zoj.model.entity.Contest;
 import com.zhou.zoj.model.entity.User;
 
@@ -23,16 +21,11 @@ import com.zhou.zoj.model.vo.ContestVO;
 import com.zhou.zoj.service.ContestService;
 import com.zhou.zoj.service.UserService;
 
-import com.zhou.zoj.utils.ScheduledTaskManager;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.time.Instant;
-import java.util.Date;
-import java.util.List;
 
 /**
  * 比赛接口

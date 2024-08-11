@@ -46,6 +46,10 @@ public class QuestionVO implements Serializable {
 
 
     /**
+     * 题目答案
+     */
+    private String answer;
+    /**
      * 题目提交数
      */
     private Integer submitNum;
@@ -82,7 +86,6 @@ public class QuestionVO implements Serializable {
      */
     private Date createTime;
     /**
-     *
      * 更新时间
      */
     private Date updateTime;
@@ -98,8 +101,6 @@ public class QuestionVO implements Serializable {
     private Boolean isAccepted;
 
     private static final long serialVersionUID = 1L;
-
-
 
 
     /**
@@ -140,7 +141,7 @@ public class QuestionVO implements Serializable {
         BeanUtils.copyProperties(question, questionVO);
         List<String> taglist = JSONUtil.toList(question.getTags(), String.class);
         questionVO.setTags(taglist);
-        JudgeConfig judgeConfig=JSONUtil.toBean(question.getJudgeConfig(),JudgeConfig.class);
+        JudgeConfig judgeConfig = JSONUtil.toBean(question.getJudgeConfig(), JudgeConfig.class);
         questionVO.setJudgeConfig(judgeConfig);
         return questionVO;
     }

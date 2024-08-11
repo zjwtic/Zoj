@@ -27,6 +27,7 @@ public class ScheduledTaskManager {
 //        scheduledTasks.put(contestId, future);
 //    }
 
+
     public void scheduleTask(Long contestId, Date targetDate, Runnable task) {
         // 取消之前的任务（如果存在）
         cancelTask(contestId);

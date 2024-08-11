@@ -32,7 +32,7 @@ import message from "@arco-design/web-vue/es/message";
 
 const dataList = ref([]) as any;
 const searchParams = ref<UserQueryRequest>({
-  pageSize: 10,
+  pageSize: 6,
   current: 1,
 }) as any;
 

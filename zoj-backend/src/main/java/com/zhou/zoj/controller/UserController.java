@@ -1,6 +1,5 @@
 package com.zhou.zoj.controller;
 
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhou.zoj.annotation.AuthCheck;
 import com.zhou.zoj.common.BaseResponse;
@@ -25,7 +24,6 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import com.zhou.zoj.service.impl.UserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -47,8 +45,6 @@ public class UserController {
     /**
      * 盐值，混淆密码
      */
-//    private static final String SALT = "yupi";
-    // todo  注意现在数据 的密码都是基于yupi 的   我这里更改后没有进行删数据  到时候更新密码会错误
     private static final String SALT = "zoj";
 
     @Resource

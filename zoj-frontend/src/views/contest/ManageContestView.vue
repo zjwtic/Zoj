@@ -17,8 +17,8 @@
           <a-button status="danger" @click="doUpdate(record)">修改</a-button>
         </a-space>
       </template>
-      <template #selectContestIds="{ record }">
-        <h5 v-for="(id, index) in record.selectContestIds" :key="index">
+      <template #selectQuestionIds="{ record }">
+        <h5 v-for="(id, index) in record.selectQuestionIds" :key="index">
           {{ getQuestionName(id) }}({{ id }})
         </h5>
       </template>
@@ -167,7 +167,7 @@ const columns = [
   },
   {
     title: "所选择的题目",
-    slotName: "selectContestIds",
+    slotName: "selectQuestionIds",
   },
   {
     title: "比赛开始时间",

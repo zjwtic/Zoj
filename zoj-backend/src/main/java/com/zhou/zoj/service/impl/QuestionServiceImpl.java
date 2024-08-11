@@ -8,7 +8,6 @@ import com.zhou.zoj.common.ErrorCode;
 import com.zhou.zoj.constant.CommonConstant;
 import com.zhou.zoj.exception.BusinessException;
 import com.zhou.zoj.exception.ThrowUtils;
-import com.zhou.zoj.mapper.QuestionSubmitMapper;
 import com.zhou.zoj.model.dto.question.QuestionQueryRequest;
 import com.zhou.zoj.model.entity.*;
 import com.zhou.zoj.model.vo.QuestionVO;
@@ -21,18 +20,6 @@ import com.zhou.zoj.utils.SqlUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.sort.SortBuilder;
-import org.elasticsearch.search.sort.SortBuilders;
-import org.elasticsearch.search.sort.SortOrder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -151,22 +138,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         }
 
         questionVO.setIsAccepted(userAccepted);
-//        // 2. 已登录，获取用户点赞、收藏状态
-//        User loginUser = userService.getLoginUserPermitNull(request);
-//        if (loginUser != null) {
-//            // 获取点赞
-//            QueryWrapper<QuestionThumb> questionThumbQueryWrapper = new QueryWrapper<>();
-//            questionThumbQueryWrapper.in("questionId", questionId);
-//            questionThumbQueryWrapper.eq("userId", loginUser.getId());
-//            QuestionThumb questionThumb = questionThumbMapper.selectOne(questionThumbQueryWrapper);
-//            questionVO.setHasThumb(questionThumb != null);
-//            // 获取收藏
-//            QueryWrapper<QuestionFavour> questionFavourQueryWrapper = new QueryWrapper<>();
-//            questionFavourQueryWrapper.in("questionId", questionId);
-//            questionFavourQueryWrapper.eq("userId", loginUser.getId());
-//            QuestionFavour questionFavour = questionFavourMapper.selectOne(questionFavourQueryWrapper);
-//            questionVO.setHasFavour(questionFavour != null);
-//        }
         return questionVO;
     }
 
@@ -183,26 +154,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         Set<Long> userIdSet = questionList.stream().map(Question::getUserId).collect(Collectors.toSet());
         Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream()
                 .collect(Collectors.groupingBy(User::getId));
-//        // 2. 已登录，获取用户点赞、收藏状态
-//        Map<Long, Boolean> questionIdHasThumbMap = new HashMap<>();
-//        Map<Long, Boolean> questionIdHasFavourMap = new HashMap<>();
-//        User loginUser = userService.getLoginUserPermitNull(request);
-//        if (loginUser != null) {
-//            Set<Long> questionIdSet = questionList.stream().map(Question::getId).collect(Collectors.toSet());
-//            loginUser = userService.getLoginUser(request);
-//            // 获取点赞
-//            QueryWrapper<QuestionThumb> questionThumbQueryWrapper = new QueryWrapper<>();
-//            questionThumbQueryWrapper.in("questionId", questionIdSet);
-//            questionThumbQueryWrapper.eq("userId", loginUser.getId());
-//            List<QuestionThumb> questionQuestionThumbList = questionThumbMapper.selectList(questionThumbQueryWrapper);
-//            questionQuestionThumbList.forEach(questionQuestionThumb -> questionIdHasThumbMap.put(questionQuestionThumb.getQuestionId(), true));
-//            // 获取收藏
-//            QueryWrapper<QuestionFavour> questionFavourQueryWrapper = new QueryWrapper<>();
-//            questionFavourQueryWrapper.in("questionId", questionIdSet);
-//            questionFavourQueryWrapper.eq("userId", loginUser.getId());
-//            List<QuestionFavour> questionFavourList = quest ionFavourMapper.selectList(questionFavourQueryWrapper);
-//            questionFavourList.forEach(questionFavour -> questionIdHasFavourMap.put(questionFavour.getQuestionId(), true));
-//        }
         User loginUser = userService.getLoginUserPermitNull(request);
         // 填充信息
         List<QuestionVO> questionVOList = questionList.stream().map(question -> {

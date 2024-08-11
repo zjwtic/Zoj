@@ -13,7 +13,6 @@ import com.zhou.zoj.model.entity.User;
 import com.zhou.zoj.model.enums.JudgeInfoMessageEnum;
 import com.zhou.zoj.model.enums.QuestionSubmitStatusEnum;
 import com.zhou.zoj.model.vo.QuestionSubmitVO;
-import com.zhou.zoj.model.vo.QuestionVO;
 import org.apache.commons.lang3.ObjectUtils;
 
 import javax.servlet.http.HttpServletRequest;
